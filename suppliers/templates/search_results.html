@@ -1,0 +1,17 @@
+{% if manufacturers %}
+<ul>
+  {% for manufacturer in manufacturers %}
+  <li>
+    <strong>{{ manufacturer.name }}</strong> <br />
+    Website:
+    <a href="{{ manufacturer.website }}" target="_blank"
+      >{{ manufacturer.website }}</a
+    >
+    <br />
+    Contact Email: {{ manufacturer.contact_email }}
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No manufacturers found.</p>
+{% endif %}
