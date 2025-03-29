@@ -7,30 +7,3 @@ __pycache__/
 
 *.env
 .env
-
-**/migrations/**
-
-# Logs and debugging
-logs/
-*.log
-debug.log
-*.out
-*.pid
-
-# Static and media files (if not using version control)
-staticfiles/
-media/
-
-# Compiled assets
-node_modules/
-npm-debug.log
-yarn-error.log
-
-# IDE and editor files
-.vscode/
-.idea/
-*.iml
-
-# Deployment files
-.DS_Store
-Procfile
