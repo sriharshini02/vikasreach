@@ -1,6 +1,7 @@
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import chromedriver_autoinstaller
 import shutil
@@ -17,26 +18,23 @@ from .serpapi_fetch import get_manufacturer_contacts
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ai_supply_bot.settings")
 django.setup()
-os.environ["CHROME_BINARY"] = "/usr/bin/google-chrome-stable"
+
 from .models import Manufacturer, Product
 
-CHROME_DRIVER_PATH = r"C:\\Users\\Public\\SRIHARSHINI\\apps installations\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe"
+# CHROME_DRIVER_PATH = r"C:\\Users\\Public\\SRIHARSHINI\\apps installations\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe"
 
 
 # RapidAPI Credentials
 RAPIDAPI_KEY = "4560435427msh81f3effeb7097bep1b5b1bjsn88ef8cb4e42b"
 RAPIDAPI_HOST = "real-time-amazon-data.p.rapidapi.com"
 
-# Install ChromeDriver
-chromedriver_autoinstaller.install()
 CHROME_PATH = "/usr/bin/google-chrome-stable"  # Default location in Render
 CHROMEDRIVER_PATH = "/usr/bin/chromedriver"  # Default Chromedriver path
 
-options = webdriver.ChromeOptions()
-options.binary_location = CHROME_PATH  # Use Render's Chromium binary
-options.add_argument("--headless")  # Required for server environments
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-dev-shm-usage")
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
 
 
 def human_like_delay(min_time=3, max_time=7):
@@ -48,9 +46,8 @@ def get_manufacturer_selenium(asin, max_retries=3):
     """Scrapes Amazon product page to find manufacturer details using ASIN."""
     url = f"https://www.amazon.com/dp/{asin}?th=1"
 
-    service = Service(CHROMEDRIVER_PATH)
-    driver = webdriver.Chrome(service=service, options=options)
-
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=chrome_options)
     retries = 0
     while retries < max_retries:
         try:
