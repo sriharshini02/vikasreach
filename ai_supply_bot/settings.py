@@ -27,7 +27,8 @@ SECRET_KEY = "django-insecure-x&qb&kc@nelvne)i(j+%b&-kwe$wqu30)zkflc_2z6zgnngj6*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["vikasreach.onrender.com"]
+ALLOWED_HOSTS = ["vikasreach.onrender.com", "localhost"]
+
 STATIC_ROOT = os.path.join(BASE_DIR, "templates")
 STATIC_URL = "/suppliers/templates/"
 

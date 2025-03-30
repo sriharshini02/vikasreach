@@ -7,4 +7,3 @@ __pycache__/
 
 *.env
 .env
-settings.py
