@@ -3,6 +3,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import chromedriver_autoinstaller
+import shutil
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
@@ -26,14 +27,18 @@ CHROME_DRIVER_PATH = r"C:\\Users\\Public\\SRIHARSHINI\\apps installations\\chrom
 RAPIDAPI_KEY = "4560435427msh81f3effeb7097bep1b5b1bjsn88ef8cb4e42b"
 RAPIDAPI_HOST = "real-time-amazon-data.p.rapidapi.com"
 
-# Ensure ChromeDriver is installed
+# Install ChromeDriver
 chromedriver_autoinstaller.install()
 
-# Set up Chrome options
-chrome_options = Options()
-chrome_options.add_argument("--headless")  # Run without UI
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--disable-dev-shm-usage")
+# Get the path of the installed Chrome binary (Render has it pre-installed)
+CHROME_PATH = "/opt/google/chrome/chrome"
+CHROMEDRIVER_PATH = shutil.which("chromedriver")
+
+options = webdriver.ChromeOptions()
+options.binary_location = CHROME_PATH  # Use Render's Chromium binary
+options.add_argument("--headless")  # Required for server environments
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
 
 
 def human_like_delay(min_time=3, max_time=7):
@@ -45,8 +50,8 @@ def get_manufacturer_selenium(asin, max_retries=3):
     """Scrapes Amazon product page to find manufacturer details using ASIN."""
     url = f"https://www.amazon.com/dp/{asin}?th=1"
 
-    service = Service("/usr/bin/chromedriver")
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+    service = Service(CHROMEDRIVER_PATH)
+    driver = webdriver.Chrome(service=service, options=options)
 
     retries = 0
     while retries < max_retries:
