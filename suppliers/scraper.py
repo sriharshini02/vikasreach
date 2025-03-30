@@ -17,7 +17,7 @@ from .serpapi_fetch import get_manufacturer_contacts
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ai_supply_bot.settings")
 django.setup()
-
+os.environ["CHROME_BINARY"] = "/usr/bin/google-chrome-stable"
 from .models import Manufacturer, Product
 
 CHROME_DRIVER_PATH = r"C:\\Users\\Public\\SRIHARSHINI\\apps installations\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe"
