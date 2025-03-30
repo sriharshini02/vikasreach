@@ -1,6 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+import chromedriver_autoinstaller
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
@@ -24,6 +26,15 @@ CHROME_DRIVER_PATH = r"C:\\Users\\Public\\SRIHARSHINI\\apps installations\\chrom
 RAPIDAPI_KEY = "4560435427msh81f3effeb7097bep1b5b1bjsn88ef8cb4e42b"
 RAPIDAPI_HOST = "real-time-amazon-data.p.rapidapi.com"
 
+# Ensure ChromeDriver is installed
+chromedriver_autoinstaller.install()
+
+# Set up Chrome options
+chrome_options = Options()
+chrome_options.add_argument("--headless")  # Run without UI
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+
 
 def human_like_delay(min_time=3, max_time=7):
     """Adds a random delay to mimic human behavior and avoid bot detection."""
@@ -34,8 +45,8 @@ def get_manufacturer_selenium(asin, max_retries=3):
     """Scrapes Amazon product page to find manufacturer details using ASIN."""
     url = f"https://www.amazon.com/dp/{asin}?th=1"
 
-    service = Service(executable_path=CHROME_DRIVER_PATH)
-    driver = webdriver.Chrome(service=service)
+    service = Service("/usr/bin/chromedriver")
+    driver = webdriver.Chrome(service=service, options=chrome_options)
 
     retries = 0
     while retries < max_retries:
