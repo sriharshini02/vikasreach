@@ -35,6 +35,9 @@ chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
+chromium_path = shutil.which("chromium-browser") or shutil.which("chromium")
+if chromium_path:
+    chrome_options.binary_location = chromium_path
 
 
 def human_like_delay(min_time=3, max_time=7):
