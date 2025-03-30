@@ -27,7 +27,9 @@ SECRET_KEY = "django-insecure-x&qb&kc@nelvne)i(j+%b&-kwe$wqu30)zkflc_2z6zgnngj6*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["vikasreach.onrender.com"]
+STATIC_ROOT = os.path.join(BASE_DIR, "templates")
+STATIC_URL = "/suppliers/templates/"
 
 
 # Application definition
@@ -54,6 +56,7 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
