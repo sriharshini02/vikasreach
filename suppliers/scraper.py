@@ -29,10 +29,8 @@ RAPIDAPI_HOST = "real-time-amazon-data.p.rapidapi.com"
 
 # Install ChromeDriver
 chromedriver_autoinstaller.install()
-
-# Get the path of the installed Chrome binary (Render has it pre-installed)
-CHROME_PATH = "/opt/google/chrome/chrome"
-CHROMEDRIVER_PATH = shutil.which("chromedriver")
+CHROME_PATH = "/usr/bin/google-chrome-stable"  # Default location in Render
+CHROMEDRIVER_PATH = "/usr/bin/chromedriver"  # Default Chromedriver path
 
 options = webdriver.ChromeOptions()
 options.binary_location = CHROME_PATH  # Use Render's Chromium binary
