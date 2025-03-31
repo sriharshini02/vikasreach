@@ -32,13 +32,17 @@ RAPIDAPI_HOST = "real-time-amazon-data.p.rapidapi.com"
 # CHROMEDRIVER_PATH = "/usr/bin/chromedriver"  # Default Chromedriver path
 
 
+# Set paths to the locally installed Chrome and ChromeDriver
+chrome_bin = os.path.expanduser("~/chrome/opt/google/chrome/google-chrome")
+chromedriver_bin = os.path.expanduser("~/chromedriver/chromedriver")
+
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 
-# Explicitly set Chrome binary path (Important for Render)
-chrome_options.binary_location = "/usr/bin/google-chrome"
+# Explicitly set Chrome binary path
+chrome_options.binary_location = chrome_bin
 
 
 def human_like_delay(min_time=3, max_time=7):
@@ -50,7 +54,7 @@ def get_manufacturer_selenium(asin, max_retries=3):
     """Scrapes Amazon product page to find manufacturer details using ASIN."""
     url = f"https://www.amazon.com/dp/{asin}?th=1"
 
-    service = Service("/usr/local/bin/chromedriver")
+    service = Service(chromedriver_bin)
     driver = webdriver.Chrome(service=service, options=chrome_options)
     retries = 0
     while retries < max_retries:
