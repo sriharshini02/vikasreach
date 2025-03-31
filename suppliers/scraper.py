@@ -31,9 +31,8 @@ RAPIDAPI_HOST = "real-time-amazon-data.p.rapidapi.com"
 # CHROME_PATH = "/usr/bin/google-chrome-stable"  # Default location in Render
 # CHROMEDRIVER_PATH = "/usr/bin/chromedriver"  # Default Chromedriver path
 
-# Set paths to the locally installed Chrome and ChromeDriver
-chrome_bin = os.path.expanduser("~/render/chrome/opt/google/chrome/google-chrome")
-chromedriver_bin = os.path.expanduser("~/render/chromedriver/chromedriver")
+chrome_bin = "/opt/render/chrome/chrome-linux64/chrome"
+chromedriver_bin = "/opt/render/chromedriver/chromedriver"
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--headless")  # Run Chrome in headless mode
