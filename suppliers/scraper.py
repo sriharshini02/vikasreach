@@ -32,7 +32,7 @@ RAPIDAPI_HOST = "real-time-amazon-data.p.rapidapi.com"
 # CHROMEDRIVER_PATH = "/usr/bin/chromedriver"  # Default Chromedriver path
 
 chrome_bin = "/opt/render/chrome/chrome-linux64/chrome"
-chromedriver_bin = "/opt/render/chromedriver/chromedriver-linux64/chromedriver"
+chromedriver_bin = "/opt/render/chromedriver/chromedriver"
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--headless")  # Run Chrome in headless mode
