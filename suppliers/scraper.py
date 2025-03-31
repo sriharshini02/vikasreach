@@ -1,6 +1,5 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import shutil
@@ -14,7 +13,6 @@ import random
 import os
 import django
 from .serpapi_fetch import get_manufacturer_contacts
-from webdriver_manager.chrome import ChromeDriverManager
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ai_supply_bot.settings")
 django.setup()
@@ -34,7 +32,8 @@ RAPIDAPI_HOST = "real-time-amazon-data.p.rapidapi.com"
 chrome_bin = "/opt/render/chrome/chrome-linux64/chrome"
 chromedriver_bin = "/opt/render/chromedriver/chromedriver"
 
-chrome_options = webdriver.ChromeOptions()
+chrome_options = Options()
+chrome_options.binary_location = chrome_bin  # Set custom Chrome binary location
 chrome_options.add_argument("--headless")  # Run Chrome in headless mode
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
