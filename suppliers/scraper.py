@@ -31,18 +31,15 @@ RAPIDAPI_HOST = "real-time-amazon-data.p.rapidapi.com"
 # CHROME_PATH = "/usr/bin/google-chrome-stable"  # Default location in Render
 # CHROMEDRIVER_PATH = "/usr/bin/chromedriver"  # Default Chromedriver path
 
-
 # Set paths to the locally installed Chrome and ChromeDriver
-chrome_bin = os.path.expanduser("~/chrome/opt/google/chrome/google-chrome")
-chromedriver_bin = os.path.expanduser("~/chromedriver/chromedriver")
+chrome_bin = os.path.expanduser("~/render/chrome/opt/google/chrome/google-chrome")
+chromedriver_bin = os.path.expanduser("~/render/chromedriver/chromedriver")
 
 chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument("--headless")
+chrome_options.add_argument("--headless")  # Run Chrome in headless mode
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
-
-# Explicitly set Chrome binary path
-chrome_options.binary_location = chrome_bin
+chrome_options.binary_location = chrome_bin  # Set custom Chrome binary location
 
 
 def human_like_delay(min_time=3, max_time=7):
