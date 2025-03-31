@@ -26,18 +26,21 @@ from .models import Manufacturer, Product
 RAPIDAPI_KEY = "4560435427msh81f3effeb7097bep1b5b1bjsn88ef8cb4e42b"
 RAPIDAPI_HOST = "real-time-amazon-data.p.rapidapi.com"
 
-# CHROME_PATH = "/usr/bin/google-chrome-stable"  # Default location in Render
-# CHROMEDRIVER_PATH = "/usr/bin/chromedriver"  # Default Chromedriver path
+# Define Correct Paths
+CHROME_BIN = "/opt/render/chrome/chrome-linux64/chrome"
+CHROMEDRIVER_BIN = "/opt/render/chromedriver/chromedriver"
 
-chrome_bin = "/opt/render/chrome/chrome-linux64/chrome"
-chromedriver_bin = "/opt/render/chromedriver/chromedriver"
+# Ensure ChromeDriver has execute permissions
+os.chmod(CHROMEDRIVER_BIN, 0o755)
 
+# Configure Chrome Options
 chrome_options = Options()
-chrome_options.binary_location = chrome_bin  # Set custom Chrome binary location
+chrome_options.binary_location = CHROME_BIN  # Set custom Chrome binary location
 chrome_options.add_argument("--headless")  # Run Chrome in headless mode
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.binary_location = chrome_bin  # Set custom Chrome binary location
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--remote-debugging-port=9222")
 
 
 def human_like_delay(min_time=3, max_time=7):
@@ -49,8 +52,10 @@ def get_manufacturer_selenium(asin, max_retries=3):
     """Scrapes Amazon product page to find manufacturer details using ASIN."""
     url = f"https://www.amazon.com/dp/{asin}?th=1"
 
-    service = Service(chromedriver_bin)
+    # Start Selenium WebDriver with correct paths
+    service = Service(CHROMEDRIVER_BIN)
     driver = webdriver.Chrome(service=service, options=chrome_options)
+
     retries = 0
     while retries < max_retries:
         try:
@@ -63,8 +68,6 @@ def get_manufacturer_selenium(asin, max_retries=3):
                     f"⚠ CAPTCHA detected on attempt {retries + 1}. Retrying after delay..."
                 )
                 time.sleep(random.uniform(10, 15))
-                # retries += 1
-                # continue
                 return None
 
             # Wait for page load
