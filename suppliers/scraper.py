@@ -14,6 +14,7 @@ import random
 import os
 import django
 from .serpapi_fetch import get_manufacturer_contacts
+from webdriver_manager.chrome import ChromeDriverManager
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ai_supply_bot.settings")
 django.setup()
@@ -30,15 +31,14 @@ RAPIDAPI_HOST = "real-time-amazon-data.p.rapidapi.com"
 # CHROME_PATH = "/usr/bin/google-chrome-stable"  # Default location in Render
 # CHROMEDRIVER_PATH = "/usr/bin/chromedriver"  # Default Chromedriver path
 
-chrome_options = Options()
+
+chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_bin = os.getenv("CHROME_BIN", "/usr/bin/chromium")
-chrome_options.binary_location = chrome_bin
 
-# Set ChromeDriver binary path
-chromedriver_bin = os.getenv("CHROMEDRIVER_BIN", "/usr/bin/chromedriver")
+# Explicitly set Chrome binary path (Important for Render)
+chrome_options.binary_location = "/usr/bin/google-chrome"
 
 
 def human_like_delay(min_time=3, max_time=7):
@@ -50,7 +50,7 @@ def get_manufacturer_selenium(asin, max_retries=3):
     """Scrapes Amazon product page to find manufacturer details using ASIN."""
     url = f"https://www.amazon.com/dp/{asin}?th=1"
 
-    service = Service(chromedriver_bin)
+    service = Service("/usr/local/bin/chromedriver")
     driver = webdriver.Chrome(service=service, options=chrome_options)
     retries = 0
     while retries < max_retries:
