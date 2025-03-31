@@ -30,7 +30,7 @@ RAPIDAPI_HOST = "real-time-amazon-data.p.rapidapi.com"
 # CHROMEDRIVER_PATH = "/usr/bin/chromedriver"  # Default Chromedriver path
 
 chrome_bin = "/opt/render/chrome/chrome-linux64/chrome"
-chromedriver_bin = "/opt/render/chromedriver/chromedriver-linux64/chromedriver"
+chromedriver_bin = "/opt/render/chromedriver/chromedriver"
 
 chrome_options = Options()
 chrome_options.binary_location = chrome_bin  # Set custom Chrome binary location
