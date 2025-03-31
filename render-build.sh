@@ -39,10 +39,32 @@ fi
 
 # Print installed paths
 echo "✅ Chrome and ChromeDriver installed successfully!"
-echo "🔍 Chrome Path: $(which chrome || echo 'Not found')"
-echo "🔍 ChromeDriver Path: $(which chromedriver || echo 'Not found')"
+
+# Debugging: Show directory structure
+echo "📂 Listing contents of /opt/render:"
+ls -l /opt/render
+
+echo "📂 Listing contents of $CHROME_DIR:"
+ls -l $CHROME_DIR
+
+echo "📂 Listing contents of $CHROMEDRIVER_DIR:"
+ls -l $CHROMEDRIVER_DIR
+
+# Print absolute paths
 echo "🔍 Expected Chrome Path: $CHROME_BIN"
 echo "🔍 Expected ChromeDriver Path: $CHROMEDRIVER_DIR/chromedriver"
 
-ls -l $CHROME_BIN
-ls -l $CHROMEDRIVER_DIR/chromedriver
+# Double-check Chrome and ChromeDriver locations
+echo "🔍 Checking Chrome binary existence..."
+if [ -x "$CHROME_BIN" ]; then
+    echo "✅ Chrome found at: $CHROME_BIN"
+else
+    echo "❌ Chrome not found at expected location!"
+fi
+
+echo "🔍 Checking ChromeDriver binary existence..."
+if [ -x "$CHROMEDRIVER_DIR/chromedriver" ]; then
+    echo "✅ ChromeDriver found at: $CHROMEDRIVER_DIR/chromedriver"
+else
+    echo "❌ ChromeDriver not found at expected location!"
+fi
