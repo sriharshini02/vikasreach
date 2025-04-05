@@ -30,7 +30,7 @@ def human_like_delay(min_time=3, max_time=7):
     time.sleep(random.uniform(min_time, max_time))
 
 
-def get_manufacturer_selenium(asin, max_retries=3):
+def get_manufacturer_selenium(asin, max_retries=1):
     """Scrapes Amazon product page to find manufacturer details using ASIN."""
     url = f"https://www.amazon.com/dp/{asin}?th=1"
 
@@ -52,11 +52,6 @@ def get_manufacturer_selenium(asin, max_retries=3):
                 # retries += 1
                 # continue
                 return None
-
-            # Wait for page load
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.TAG_NAME, "body"))
-            )
 
             soup = BeautifulSoup(driver.page_source, "html.parser")
 
@@ -158,41 +153,42 @@ def scrape_products(search_query):
     products = response_json["data"]["products"]
     product_list = []
     ind = 0
+
     for product in products:
         asin = product["asin"]
         title = product["product_title"]
         manufacturer_name = get_manufacturer_selenium(asin)
 
-        # Fetch manufacturer details from DB
+        # Fetch manufacturer details from DB or external source
         manufacturer_details = (
             fetch_manufacturer_details(manufacturer_name) if manufacturer_name else None
         )
 
         # Store new manufacturer if not in database
         manufacturer = None
-        if manufacturer_details:
+        if manufacturer_details and manufacturer_details.get("contact_email"):
             manufacturer, created = Manufacturer.objects.get_or_create(
-                name=manufacturer_details["name"],
+                contact_email=manufacturer_details["contact_email"],
                 defaults={
+                    "name": manufacturer_details["name"],
                     "website": manufacturer_details["website"],
-                    "contact_email": manufacturer_details["contact_email"],
                     "contact_phone": manufacturer_details["contact_phone"],
                 },
             )
-        else:
-            if manufacturer_name:
-                manufacturer, created = Manufacturer.objects.get_or_create(
-                    name=manufacturer_name
-                )
+        elif manufacturer_name:
+            # If only the name is known (no email), fallback to name
+            manufacturer, created = Manufacturer.objects.get_or_create(
+                name=manufacturer_name
+            )
 
         # Save product
         product_obj, created = Product.objects.get_or_create(
             name=title,
+            manufacturer=manufacturer,
             defaults={
                 "category": None,
                 "website": None,
                 "raw_materials": search_query,
-                "manufacturer": manufacturer,
             },
         )
 
@@ -212,9 +208,11 @@ def scrape_products(search_query):
                 ),
             }
         )
+
         ind += 1
         if ind == 5:
             break
+
         human_like_delay(3, 8)
 
     return product_list

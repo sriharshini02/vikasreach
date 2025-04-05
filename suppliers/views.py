@@ -12,35 +12,44 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from django.http import JsonResponse
 from django.core.mail import EmailMessage
+from .get_products import get_products_from_raw_material
+from collections import defaultdict
 
 
 @login_required
 def home(request):
-    manufacturers = []
+    manufacturers_by_product = defaultdict(list)
     query = ""
 
     if request.method == "POST":
         if "query" in request.POST:
-            # Handle search
-            query = request.POST.get("query", "")
+            # Handle material-to-product search
+            query = request.POST.get("query", "").strip()
             if query:
-                scraped_data = scrape_products(query)  # Call the scraper
-                for item in scraped_data:
-                    manufacturer_info = item.get("Manufacturer", {})
-                    name = manufacturer_info.get("name")
-                    email = manufacturer_info.get("contact_email")
+                product_list = get_products_from_raw_material(query)
 
-                    if name and email:  # Only add if both are present
-                        manufacturers.append(
-                            {
-                                "name": name,
-                                "website": manufacturer_info.get("website", "#"),
-                                "contact_email": email,
-                            }
-                        )
+                # If no products found, fall back to query itself
+                if not product_list:
+                    product_list = [query]
+
+                for product in product_list:
+                    scraped_data = scrape_products(product)
+                    for item in scraped_data:
+                        manufacturer_info = item.get("Manufacturer", {})
+                        name = manufacturer_info.get("name")
+                        email = manufacturer_info.get("contact_email")
+
+                        if name and email:
+                            manufacturers_by_product[product].append(
+                                {
+                                    "name": name,
+                                    "website": manufacturer_info.get("website", "#"),
+                                    "contact_email": email,
+                                }
+                            )
 
         elif "manufacturer_email" in request.POST:
-            # Handle AJAX email sending
+            # Handle email sending (AJAX)
             manufacturer_email = request.POST.get("manufacturer_email")
             manufacturer_name = request.POST.get("manufacturer_name")
             user_email = request.user.email
@@ -73,10 +82,10 @@ def home(request):
                 email = EmailMessage(
                     subject,
                     message,
-                    settings.EMAIL_HOST_USER,  # Sender (your configured email)
-                    [manufacturer_email],  # Recipient
-                    bcc=[user_email],  # BCC: User also gets a copy
-                    reply_to=[user_email],  # Reply goes to the user
+                    settings.EMAIL_HOST_USER,
+                    [manufacturer_email],
+                    bcc=[user_email],
+                    reply_to=[user_email],
                 )
                 email.send()
 
@@ -91,7 +100,7 @@ def home(request):
     return render(
         request,
         "home.html",
-        {"manufacturers": manufacturers, "query": query},
+        {"manufacturers_by_product": dict(manufacturers_by_product), "query": query},
     )
 
 

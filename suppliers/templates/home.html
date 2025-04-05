@@ -5,22 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>VikasReach - Home</title>
     <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+
       body {
         font-family: Arial, sans-serif;
-        background-color: #f8f9fa;
-        margin: 0;
-        padding: 0;
+        background-color: #cce2f9;
+        display: flex;
+        flex-direction: column;
         text-align: center;
       }
 
       .container {
+        flex: 1;
         width: 80%;
         margin: auto;
-        background: white;
+        background: rgb(229, 240, 244);
         padding: 20px;
         border-radius: 8px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
         margin-top: 20px;
+        margin-bottom: 20px;
       }
 
       .header {
@@ -28,9 +36,9 @@
         justify-content: space-between;
         align-items: center;
         padding: 15px 20px;
-        background-color: #007bff;
+        background-color: #04254b;
         color: white;
-        border-radius: 8px 8px 0 0;
+        border-radius: 0;
       }
 
       .nav-links a {
@@ -45,8 +53,8 @@
       }
 
       .logout-btn {
-        background-color: red;
-        color: white;
+        background-color: #e74c3c;
+        color: rgb(200, 234, 234);
         border: none;
         padding: 8px 12px;
         cursor: pointer;
@@ -63,7 +71,7 @@
       }
 
       button {
-        background-color: #007bff;
+        background-color: #064083;
         color: white;
         cursor: pointer;
         font-size: 16px;
@@ -71,7 +79,7 @@
       }
 
       button:hover {
-        background-color: #0056b3;
+        background-color: #041933;
       }
 
       ul {
@@ -80,10 +88,15 @@
       }
 
       li {
-        background: #f1f1f1;
-        padding: 10px;
+        background: #d7e2e9;
+        padding: 12px;
         margin: 10px 0;
         border-radius: 5px;
+        text-align: left;
+      }
+
+      a {
+        color: #4a90e2;
       }
 
       .message-box {
@@ -100,11 +113,24 @@
       }
 
       .footer {
-        margin-top: 20px;
-        padding: 10px;
-        background: #007bff;
+        background: #033167;
         color: white;
-        border-radius: 0 0 8px 8px;
+        padding: 10px;
+        border-radius: 0;
+        text-align: center;
+      }
+
+      .footer a {
+        color: rgb(224, 234, 239);
+        text-decoration: underline;
+      }
+
+      .product-title {
+        margin-top: 30px;
+        font-size: 20px;
+        color: #372948;
+        border-bottom: 2px solid #032853;
+        padding-bottom: 5px;
       }
     </style>
   </head>
@@ -132,37 +158,44 @@
       </form>
 
       {% if query %}
-      <h3>Manufacturers for "{{ query }}"</h3>
+      <h3>Manufacturers by Product for "{{ query }}"</h3>
 
-      {% if manufacturers %}
+      {% if manufacturers_by_product %}
       <ul>
-        {% for manufacturer in manufacturers %}
+        {% for product, manufacturers in manufacturers_by_product.items %}
         <li>
-          <strong>{{ manufacturer.name }}</strong> <br />
-          Website:
-          <a href="{{ manufacturer.website }}" target="_blank"
-            >{{ manufacturer.website }}</a
-          ><br />
-          Contact Email: {{ manufacturer.contact_email }} <br />
+          <h4 style="color: #007bff">{{ product }}</h4>
+          <ul>
+            {% for manufacturer in manufacturers %}
+            <li>
+              <strong>{{ manufacturer.name }}</strong><br />
+              Website:
+              <a href="{{ manufacturer.website }}" target="_blank">
+                {{ manufacturer.website }} </a
+              ><br />
+              Contact Email: {{ manufacturer.contact_email }}<br />
 
-          {% if manufacturer.contact_email != "None" %}
-          <form class="email-form">
-            {% csrf_token %}
-            <input
-              type="hidden"
-              name="manufacturer_email"
-              value="{{ manufacturer.contact_email }}"
-            />
-            <input
-              type="hidden"
-              name="manufacturer_name"
-              value="{{ manufacturer.name }}"
-            />
-            <button type="submit">Send Email</button>
-          </form>
-          {% else %}
-          <p style="color: red">No email available</p>
-          {% endif %}
+              {% if manufacturer.contact_email != "None" %}
+              <form class="email-form" method="POST">
+                {% csrf_token %}
+                <input
+                  type="hidden"
+                  name="manufacturer_email"
+                  value="{{ manufacturer.contact_email }}"
+                />
+                <input
+                  type="hidden"
+                  name="manufacturer_name"
+                  value="{{ manufacturer.name }}"
+                />
+                <button type="submit">Send Email</button>
+              </form>
+              {% else %}
+              <p style="color: red">No email available</p>
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ul>
         </li>
         {% endfor %}
       </ul>
