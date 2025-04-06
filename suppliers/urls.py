@@ -7,7 +7,7 @@ from .views import (
 )
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import scrape_view, home
-from .auth_views import register_user, register, login_view
+from .auth_views import register_view, login_view
 from .auth_views import logout_view
 from django.urls import path
 from .views import contact_view, about_view
@@ -30,7 +30,6 @@ urlpatterns = [
     path("products/", ProductListCreateView.as_view(), name="product-list"),
     path("products/<int:pk>/", ProductDetailView.as_view(), name="product-detail"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    path("register/", register, name="register"),  # HTML form-based register
-    path("api/register/", register_user, name="api-register"),  # API register
+    path("register/", register_view, name="register"),  # HTML form-based registeration
     path("login/", login_view, name="login"),  # HTML form-based login
 ]

@@ -5,59 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register</title>
     <style>
+      html,
       body {
+        height: 100%;
+        margin: 0;
         font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
+        background-color: #bcdafa;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
-        margin: 0;
       }
 
       .container {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        width: 300px;
+        background: rgb(219, 238, 245);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.08);
+        width: 350px;
         text-align: center;
       }
 
       h2 {
-        color: #333;
+        margin-bottom: 20px;
+        color: #04254b;
       }
 
       input {
-        width: 100%;
+        width: 90%;
         padding: 10px;
-        margin: 8px 0;
+        margin: 10px 0;
         border: 1px solid #ccc;
-        border-radius: 4px;
+        border-radius: 6px;
+        font-size: 14px;
       }
 
       button {
-        width: 100%;
+        width: 95%;
         padding: 10px;
-        background-color: #28a745;
+        background-color: #064083;
         color: white;
         border: none;
-        border-radius: 4px;
+        border-radius: 6px;
         cursor: pointer;
         font-size: 16px;
-      }
-
-      button:hover {
-        background-color: #218838;
-      }
-
-      p {
         margin-top: 10px;
       }
 
+      button:hover {
+        background-color: #041933;
+      }
+
+      p {
+        margin-top: 15px;
+        font-size: 14px;
+        color: #333;
+      }
+
       a {
-        color: #007bff;
+        color: #4a90e2;
         text-decoration: none;
+        font-weight: bold;
       }
 
       a:hover {
@@ -68,7 +75,7 @@
   <body>
     <div class="container">
       <h2>Register</h2>
-      <form method="POST">
+      <form method="POST" action="">
         {% csrf_token %}
         <input type="text" name="username" placeholder="Username" required />
         <input type="email" name="email" placeholder="Email" required />
