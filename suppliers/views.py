@@ -1,19 +1,13 @@
-from rest_framework import generics, permissions
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from .models import Manufacturer, Product
-from .serializers import ManufacturerSerializer, ProductSerializer
+from .models import Product
 from django.contrib import messages
-from rest_framework.decorators import api_view
-from .scraper import scrape_products
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.conf import settings
 from django.http import JsonResponse
 from django.core.mail import EmailMessage
-from .get_products import get_products_from_raw_material
 from collections import defaultdict
+from .models import Ingredient, IngredientProduct
 
 
 @login_required
@@ -23,33 +17,34 @@ def home(request):
 
     if request.method == "POST":
         if "query" in request.POST:
-            # Handle material-to-product search
-            query = request.POST.get("query", "").strip()
+            query = request.POST.get("query", "").strip().lower()
+
             if query:
-                product_list = get_products_from_raw_material(query)
+                try:
+                    ingredient = Ingredient.objects.get(name__iexact=query)
+                    product_links = IngredientProduct.objects.filter(
+                        ingredient=ingredient
+                    )
+                    product_ids = product_links.values_list("product_id", flat=True)
+                    products = Product.objects.filter(id__in=product_ids)
 
-                # If no products found, fall back to query itself
-                if not product_list:
-                    product_list = [query]
-
-                for product in product_list:
-                    scraped_data = scrape_products(product)
-                    for item in scraped_data:
-                        manufacturer_info = item.get("Manufacturer", {})
-                        name = manufacturer_info.get("name")
-                        email = manufacturer_info.get("contact_email")
-
-                        if name and email:
-                            manufacturers_by_product[product].append(
+                    for product in products:
+                        manufacturer = product.manufacturer
+                        if manufacturer:
+                            manufacturers_by_product[product.name].append(
                                 {
-                                    "name": name,
-                                    "website": manufacturer_info.get("website", "#"),
-                                    "contact_email": email,
+                                    "name": manufacturer.name,
+                                    "website": manufacturer.website or "#",
+                                    "contact_email": manufacturer.contact_email
+                                    or "Not Available",
                                 }
                             )
 
+                except Ingredient.DoesNotExist:
+                    # If no matching ingredient found, show nothing
+                    pass
+
         elif "manufacturer_email" in request.POST:
-            # Handle email sending (AJAX)
             manufacturer_email = request.POST.get("manufacturer_email")
             manufacturer_name = request.POST.get("manufacturer_name")
             user_email = request.user.email
@@ -70,8 +65,6 @@ def home(request):
             I would love to discuss potential business opportunities with you. 
 
             Please let me know a convenient time to connect.
-
-            Looking forward to your response.
 
             Best Regards,  
             {request.user.username}  
@@ -107,13 +100,6 @@ def home(request):
 from django.http import JsonResponse
 
 
-@api_view(["GET"])
-def scrape_view(request):
-    query = request.GET.get("query", "default_product")
-    products = scrape_products(query)
-    return Response({"products": products})
-
-
 @login_required
 def contact_view(request):
     if request.method == "POST":
@@ -139,33 +125,3 @@ def contact_view(request):
 
 def about_view(request):
     return render(request, "about.html")
-
-
-# Manufacturer List/Create API
-class ManufacturerListCreateView(generics.ListCreateAPIView):
-    queryset = Manufacturer.objects.all()
-    serializer_class = ManufacturerSerializer
-    permission_classes = [
-        permissions.IsAuthenticated
-    ]  # Only authenticated users can access
-
-
-# Manufacturer Retrieve/Update/Delete API
-class ManufacturerDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Manufacturer.objects.all()
-    serializer_class = ManufacturerSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-
-# Product List/Create API
-class ProductListCreateView(generics.ListCreateAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-
-# Product Retrieve/Update/Delete API
-class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticated]
