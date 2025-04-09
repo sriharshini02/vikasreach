@@ -5,7 +5,7 @@ from django.db import models
 class Manufacturer(models.Model):
     name = models.CharField(max_length=255, unique=True)
     website = models.URLField(blank=True, null=True)
-    contact_email = models.EmailField(unique=True, blank=True, null=True)
+    contact_email = models.EmailField(blank=True, null=True)
     contact_phone = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
