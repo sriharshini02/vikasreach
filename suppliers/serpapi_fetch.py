@@ -1,3 +1,4 @@
+import email
 import os
 import requests
 import re
@@ -81,12 +82,12 @@ def generate_response(user_input):
     model = genai.GenerativeModel(  # type: ignore
         model_name="gemini-2.0-pro-exp-02-05",
         generation_config={
-            "temperature": 0.4,
+            "temperature": 0.1,
             "top_p": 0.95,
             "top_k": 40,
             "max_output_tokens": 1024,
         },  # type: ignore
-        system_instruction="Only provide phone number and email separated by comma of the given manufacturer. If not found, keep it as none.",
+        system_instruction="Only provide phone number and email separated by comma of the given manufacturer. If not found, keep it as none.This is highly important don't give any invalid email.",
     )
 
     prompt = f"History:\n{history_context}\n\nUser: {user_input}\nAssistant:"
@@ -106,11 +107,11 @@ def get_manufacturer_contacts(manufacturer_name):
     """Fetch website, email, and phone, using Gemini AI as a fallback."""
     website = get_manufacturer_website(manufacturer_name)
     contact_info = get_contact_details(manufacturer_name)
-
+    # contact_info = {"emails": [], "phones": []}
     if not contact_info["emails"] or not contact_info["phones"]:
         ai_response = generate_response(manufacturer_name)
         if ai_response and "," in ai_response:
-            email, phone = ai_response.split(",")
+            phone, email = ai_response.split(",")
             if not contact_info["emails"]:
                 contact_info["emails"].append(email.strip())
             if not contact_info["phones"]:

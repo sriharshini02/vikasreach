@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: ai-supply-bot
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn ai_supply_bot.wsgi:application
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: ai_supply_bot.settings
+      - key: DATABASE_URL
+        fromDatabase:
+          name: instacart-db
+          property: connectionString

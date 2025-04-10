@@ -169,13 +169,15 @@
             {% for manufacturer in manufacturers %}
             <li>
               <strong>{{ manufacturer.name }}</strong><br />
-              Website:
+              {% if manufacturer.website != "#" %} Website:
               <a href="{{ manufacturer.website }}" target="_blank">
                 {{ manufacturer.website }} </a
               ><br />
+              {% endif %} {% if manufacturer.contact_email != "Not Available" %}
               Contact Email: {{ manufacturer.contact_email }}<br />
-
-              {% if manufacturer.contact_email != "None" %}
+              {% endif %} {% if manufacturer.contact_phone != "Not Available" %}
+              Contact Phone: {{ manufacturer.contact_phone }}<br />
+              {% endif %} {% if manufacturer.contact_email != "Not Available" %}
               <form class="email-form" method="POST">
                 {% csrf_token %}
                 <input

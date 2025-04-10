@@ -28,17 +28,25 @@ def home(request):
                     product_ids = product_links.values_list("product_id", flat=True)
                     products = Product.objects.filter(id__in=product_ids)
 
+                    # Track unique manufacturers by name + email
+                    seen = set()
+
                     for product in products:
                         manufacturer = product.manufacturer
                         if manufacturer:
-                            manufacturers_by_product[product.name].append(
-                                {
-                                    "name": manufacturer.name,
-                                    "website": manufacturer.website or "#",
-                                    "contact_email": manufacturer.contact_email
-                                    or "Not Available",
-                                }
-                            )
+                            identifier = (manufacturer.name, manufacturer.contact_email)
+                            if identifier not in seen:
+                                seen.add(identifier)
+                                manufacturers_by_product[product.category].append(
+                                    {
+                                        "name": manufacturer.name,
+                                        "website": manufacturer.website or "#",
+                                        "contact_email": manufacturer.contact_email
+                                        or "Not Available",
+                                        "contact_phone": manufacturer.contact_phone
+                                        or "Not Available",
+                                    }
+                                )
 
                 except Ingredient.DoesNotExist:
                     # If no matching ingredient found, show nothing

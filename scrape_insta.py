@@ -9,6 +9,9 @@ from urllib.parse import urlparse, unquote
 import time
 import os
 import django
+import re
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 # Setup Django environment
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ai_supply_bot.settings")
@@ -26,10 +29,10 @@ driver = webdriver.Chrome(
     service=Service(ChromeDriverManager().install()), options=options
 )
 
-search_term = "chips"
+search_term = "ketchup"
 url = f"https://www.instacart.com/store/s?k={search_term}"
 driver.get(url)
-time.sleep(15)
+time.sleep(10)
 
 # Scroll to load all products
 prev_count = 0
@@ -73,8 +76,8 @@ for url in product_links:
 
     # Extract product name from URL slug
     product_slug = urlparse(url).path.split("/")[-1]
-    product_name = unquote(product_slug).replace("-", " ").title()
-
+    product_name = unquote(product_slug).split("-")
+    product_name = " ".join(product_name[1:]).title()
     # Manufacturer name
     try:
         manufacturer_name = driver.find_element(By.CLASS_NAME, "e-10iahqc").text.strip()
@@ -102,9 +105,21 @@ for url in product_links:
     if manufacturer_name:
         contact_data = get_manufacturer_contacts(manufacturer_name)
         website = contact_data.get("website")
-        email = contact_data.get("emails", [None])[0]
-        phone = contact_data.get("phones", [None])[0]
+        emails = contact_data.get("emails")
+        phones = contact_data.get("phones")
 
+        raw_email = emails[0] if emails else None
+        raw_phone = phones[0] if phones else None
+        # ✅ Validate email
+        try:
+            validate_email(raw_email)
+            email = raw_email
+        except (ValidationError, TypeError):
+            email = None
+
+        # ✅ Validate phone using a simple regex
+        phone_pattern = re.compile(r"^\+?[0-9\s\-\(\)]{7,20}$")
+        phone = raw_phone if raw_phone and phone_pattern.match(raw_phone) else None
         manufacturer, _ = Manufacturer.objects.get_or_create(
             name=manufacturer_name,
             defaults={
@@ -113,13 +128,13 @@ for url in product_links:
                 "contact_phone": phone,
             },
         )
-
+    search_term = search_term.replace("+", " ")
     # Save product
     product, _ = Product.objects.get_or_create(
         name=product_name,
         defaults={
             "manufacturer": manufacturer,
-            "category": None,
+            "category": search_term,
             "website": url,
             "store_name": (
                 urlparse(url).query.split("retailerSlug=")[-1]
@@ -131,7 +146,7 @@ for url in product_links:
 
     # Save ingredients and mapping
     for ingredient_name in ingredients_list:
-        ingredient, _ = Ingredient.objects.get_or_create(name=ingredient_name)
+        ingredient, _ = Ingredient.objects.get_or_create(name=ingredient_name.lower())
         IngredientProduct.objects.get_or_create(product=product, ingredient=ingredient)
 
     print(f"✅ Saved: {product_name} | Manufacturer: {manufacturer_name}")
