@@ -62,7 +62,8 @@
       }
 
       input,
-      button {
+      button,
+      textarea {
         padding: 10px;
         margin: 8px;
         width: 80%;
@@ -132,6 +133,58 @@
         border-bottom: 2px solid #032853;
         padding-bottom: 5px;
       }
+      #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.85);
+        z-index: 9999;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .loading-spinner {
+        border: 8px solid #e0e0e0;
+        border-top: 8px solid #064083;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+      #loading-overlay {
+        transition: opacity 0.3s ease;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      #loading-overlay p {
+        font-size: 18px;
+        color: #04254b;
+        font-weight: bold;
+      }
+
+      #emailModal {
+        position: fixed;
+        top: 20%;
+        left: 35%;
+        width: 30%;
+        background: #fff;
+        padding: 20px;
+        border: 2px solid #444;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px #999;
+        z-index: 1000;
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -178,20 +231,12 @@
               {% endif %} {% if manufacturer.contact_phone != "Not Available" %}
               Contact Phone: {{ manufacturer.contact_phone }}<br />
               {% endif %} {% if manufacturer.contact_email != "Not Available" %}
-              <form class="email-form" method="POST">
-                {% csrf_token %}
-                <input
-                  type="hidden"
-                  name="manufacturer_email"
-                  value="{{ manufacturer.contact_email }}"
-                />
-                <input
-                  type="hidden"
-                  name="manufacturer_name"
-                  value="{{ manufacturer.name }}"
-                />
-                <button type="submit">Send Email</button>
-              </form>
+              <button
+                type="button"
+                onclick="openEmailModal('{{ manufacturer.name }}', '{{ manufacturer.contact_email }}')"
+              >
+                Send Email
+              </button>
               {% else %}
               <p style="color: red">No email available</p>
               {% endif %}
@@ -208,6 +253,39 @@
       <div id="message-box" class="message-box"></div>
     </div>
 
+    <div id="emailModal">
+      <form id="custom-email-form" method="POST">
+        {% csrf_token %}
+        <input
+          type="hidden"
+          name="manufacturer_email"
+          id="modal-manufacturer-email"
+        />
+        <input
+          type="hidden"
+          name="manufacturer_name"
+          id="modal-manufacturer-name"
+        />
+        <label>Subject:</label><br />
+        <input
+          type="text"
+          name="email_subject"
+          id="modal-email-subject"
+          required
+        /><br />
+        <label>Message:</label><br />
+        <textarea
+          name="email_body"
+          id="modal-email-body"
+          rows="6"
+          required
+        ></textarea
+        ><br />
+        <button type="submit">Send Email</button>
+        <button type="button" onclick="closeModal()">Cancel</button>
+      </form>
+    </div>
+
     <div class="footer">
       <p>
         &copy; 2025 VikasReach |
@@ -218,6 +296,67 @@
     </div>
 
     <script>
+      function openEmailModal(name, email) {
+        const subject = "Business Inquiry Regarding ${name}";
+        const message =
+          "Dear ${name},\n\nI am reaching out as I am interested in collaborating with your company.\nI would love to discuss potential business opportunities with you.\n\nPlease let me know a convenient time to connect.\n\nBest Regards,\n{{ request.user.username }}\n{{ request.user.email }}";
+
+        document.getElementById("modal-manufacturer-email").value = email;
+        document.getElementById("modal-manufacturer-name").value = name;
+        document.getElementById("modal-email-subject").value = subject;
+        document.getElementById("modal-email-body").value = message;
+
+        document.getElementById("emailModal").style.display = "block";
+      }
+
+      function closeModal() {
+        document.getElementById("emailModal").style.display = "none";
+      }
+
+      document
+        .getElementById("custom-email-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const formData = new FormData(this);
+          const csrfToken = formData.get("csrfmiddlewaretoken");
+
+          // Show loader when sending custom email
+          const loader = document.getElementById("loading-overlay");
+          loader.style.display = "flex";
+
+          fetch("", {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": csrfToken,
+            },
+            body: formData,
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              loader.style.display = "none"; // Hide loader
+              closeModal();
+
+              let messageBox = document.getElementById("message-box");
+              messageBox.innerText = data.message;
+              messageBox.style.backgroundColor = data.success
+                ? "#28a745"
+                : "#dc3545";
+              messageBox.style.display = "block";
+              messageBox.style.top = "20px";
+
+              setTimeout(() => {
+                messageBox.style.top = "-50px";
+                setTimeout(() => {
+                  messageBox.style.display = "none";
+                }, 500);
+              }, 3000);
+            })
+            .catch((err) => {
+              loader.style.display = "none"; // Hide loader on error too
+              console.error("Error sending email:", err);
+            });
+        });
+
       document.addEventListener("DOMContentLoaded", function () {
         const forms = document.querySelectorAll(".email-form");
 
@@ -230,6 +369,10 @@
               "[name=csrfmiddlewaretoken]"
             ).value;
 
+            // Show loading animation
+            const loader = document.getElementById("loading-overlay");
+            loader.style.display = "flex";
+
             fetch("", {
               method: "POST",
               body: formData,
@@ -239,6 +382,8 @@
             })
               .then((response) => response.json())
               .then((data) => {
+                loader.style.display = "none"; // Hide loading
+
                 let messageBox = document.getElementById("message-box");
                 messageBox.innerText = data.message;
                 messageBox.style.backgroundColor = data.success
@@ -254,10 +399,17 @@
                   }, 500);
                 }, 3000);
               })
-              .catch((error) => console.error("Error:", error));
+              .catch((error) => {
+                loader.style.display = "none";
+                console.error("Error:", error);
+              });
           });
         });
       });
     </script>
+    <div id="loading-overlay">
+      <div class="loading-spinner"></div>
+      <p>Sending your email...</p>
+    </div>
   </body>
 </html>
