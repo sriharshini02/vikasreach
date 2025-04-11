@@ -171,6 +171,16 @@
         color: #04254b;
         font-weight: bold;
       }
+      @media (max-width: 500px) {
+        #emailModal {
+          width: 90% !important;
+          left: 5% !important;
+        }
+
+        .container {
+          width: 95%;
+        }
+      }
 
       #emailModal {
         position: fixed;
@@ -184,6 +194,13 @@
         box-shadow: 0px 0px 10px #999;
         z-index: 1000;
         display: none;
+      }
+      .manufacturer-link {
+        display: inline-block;
+        max-width: 100%;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        white-space: normal;
       }
     </style>
   </head>
@@ -211,41 +228,72 @@
       </form>
 
       {% if query %}
-      <h3>Manufacturers by Product for "{{ query }}"</h3>
+      <h3>Manufacturers of "{{ query }}"</h3>
 
       {% if manufacturers_by_product %}
-      <ul>
+      <div
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+          gap: 20px;
+          margin-top: 30px;
+        "
+      >
         {% for product, manufacturers in manufacturers_by_product.items %}
-        <li>
-          <h4 style="color: #007bff">{{ product }}</h4>
-          <ul>
-            {% for manufacturer in manufacturers %}
-            <li>
-              <strong>{{ manufacturer.name }}</strong><br />
-              {% if manufacturer.website != "#" %} Website:
-              <a href="{{ manufacturer.website }}" target="_blank">
-                {{ manufacturer.website }} </a
-              ><br />
-              {% endif %} {% if manufacturer.contact_email != "Not Available" %}
-              Contact Email: {{ manufacturer.contact_email }}<br />
-              {% endif %} {% if manufacturer.contact_phone != "Not Available" %}
-              Contact Phone: {{ manufacturer.contact_phone }}<br />
-              {% endif %} {% if manufacturer.contact_email != "Not Available" %}
+        <div
+          style="background-color: #9fa6db; padding: 20px; border-radius: 8px"
+        >
+          <h3 style="color: #033167; margin-bottom: 10px">
+            {{ product|title }}
+          </h3>
+          {% for manufacturer in manufacturers %}
+          <div
+            style="
+              background-color: #ffffff;
+              padding: 15px;
+              margin-bottom: 15px;
+              border-radius: 5px;
+              text-align: left;
+            "
+          >
+            <strong>{{ manufacturer.name }}</strong><br />
+            {% if manufacturer.website != "#" %} Website:
+            <a
+              href="{{ manufacturer.website }}"
+              target="_blank"
+              class="manufacturer-link"
+              >{{ manufacturer.website }}</a
+            ><br />
+
+            {% endif %} {% if manufacturer.contact_email != "Not Available" %}
+            Contact Email: {{ manufacturer.contact_email }}<br />
+            {% endif %} {% if manufacturer.contact_phone != "Not Available" %}
+            Contact Phone: {{ manufacturer.contact_phone }}<br />
+            {% endif %} {% if manufacturer.contact_email != "Not Available" %}
+            {% if manufacturer.email_sent %}
+            <p style="color: green; margin-top: 8px">
+              <strong>Already Emailed ✅</strong>
+            </p>
+            {% else %}
+            <div
+              id="email-btn-wrapper-{{ manufacturer.contact_email|slugify }}"
+            >
               <button
                 type="button"
                 onclick="openEmailModal('{{ manufacturer.name }}', '{{ manufacturer.contact_email }}')"
               >
                 Send Email
               </button>
-              {% else %}
-              <p style="color: red">No email available</p>
-              {% endif %}
-            </li>
-            {% endfor %}
-          </ul>
-        </li>
+            </div>
+
+            {% endif %} {% else %}
+            <p style="color: red">No email available</p>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
         {% endfor %}
-      </ul>
+      </div>
       {% else %}
       <p>No manufacturers found.</p>
       {% endif %} {% endif %}
@@ -297,9 +345,17 @@
 
     <script>
       function openEmailModal(name, email) {
-        const subject = "Business Inquiry Regarding ${name}";
-        const message =
-          "Dear ${name},\n\nI am reaching out as I am interested in collaborating with your company.\nI would love to discuss potential business opportunities with you.\n\nPlease let me know a convenient time to connect.\n\nBest Regards,\n{{ request.user.username }}\n{{ request.user.email }}";
+        const subject = `Business Inquiry Regarding ${name}`;
+        const message = `Dear ${name},
+
+I am reaching out as I am interested in collaborating with your company.
+I would love to discuss potential business opportunities with you.
+
+Please let me know a convenient time to connect.
+
+Best Regards,
+{{ request.user.username }}
+{{ request.user.email }}`;
 
         document.getElementById("modal-manufacturer-email").value = email;
         document.getElementById("modal-manufacturer-name").value = name;
@@ -335,6 +391,14 @@
             .then((data) => {
               loader.style.display = "none"; // Hide loader
               closeModal();
+
+              const sentTo = formData.get("manufacturer_email");
+              const wrapperId =
+                "email-btn-wrapper-" + sentTo.replace(/[@.]/g, "-");
+              const wrapper = document.getElementById(wrapperId);
+              if (wrapper) {
+                wrapper.innerHTML = `<p style="color: green; margin-top: 8px"><strong>Already Emailed ✅</strong></p>`;
+              }
 
               let messageBox = document.getElementById("message-box");
               messageBox.innerText = data.message;

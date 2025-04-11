@@ -1,13 +1,17 @@
-from .models import Product
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
-from django.shortcuts import render
+from django.core.mail import EmailMessage
 from django.conf import settings
 from django.http import JsonResponse
-from django.core.mail import EmailMessage
+from django.shortcuts import render
 from collections import defaultdict
-from .models import Ingredient, IngredientProduct
+
+from suppliers.models import (
+    Manufacturer,
+    Product,
+    Ingredient,
+    IngredientProduct,
+    EmailOutreach,
+)
 
 
 @login_required
@@ -18,7 +22,6 @@ def home(request):
     if request.method == "POST":
         if "query" in request.POST:
             query = request.POST.get("query", "").strip().lower()
-
             if query:
                 try:
                     ingredient = Ingredient.objects.get(name__iexact=query)
@@ -28,15 +31,17 @@ def home(request):
                     product_ids = product_links.values_list("product_id", flat=True)
                     products = Product.objects.filter(id__in=product_ids)
 
-                    # Track unique manufacturers by name + email
                     seen = set()
-
                     for product in products:
                         manufacturer = product.manufacturer
                         if manufacturer:
                             identifier = (manufacturer.name, manufacturer.contact_email)
                             if identifier not in seen:
                                 seen.add(identifier)
+                                already_sent = EmailOutreach.objects.filter(
+                                    user=request.user, manufacturer=manufacturer
+                                ).exists()
+
                                 manufacturers_by_product[product.category].append(
                                     {
                                         "name": manufacturer.name,
@@ -45,16 +50,18 @@ def home(request):
                                         or "Not Available",
                                         "contact_phone": manufacturer.contact_phone
                                         or "Not Available",
+                                        "email_sent": already_sent,
                                     }
                                 )
 
                 except Ingredient.DoesNotExist:
-                    # If no matching ingredient found, show nothing
                     pass
 
         elif "manufacturer_email" in request.POST:
             manufacturer_email = request.POST.get("manufacturer_email")
             manufacturer_name = request.POST.get("manufacturer_name")
+            email_subject = request.POST.get("email_subject")
+            email_body = request.POST.get("email_body")
             user_email = request.user.email
 
             if not manufacturer_email or manufacturer_email == "Not Available":
@@ -65,30 +72,27 @@ def home(request):
                     }
                 )
 
-            subject = f"Business Inquiry Regarding {manufacturer_name}"
-            message = f"""
-            Dear {manufacturer_name},
-
-            I am reaching out as I am interested in collaborating with your company. 
-            I would love to discuss potential business opportunities with you. 
-
-            Please let me know a convenient time to connect.
-
-            Best Regards,  
-            {request.user.username}  
-            {user_email}
-            """
-
             try:
                 email = EmailMessage(
-                    subject,
-                    message,
+                    email_subject,
+                    email_body,
                     settings.EMAIL_HOST_USER,
                     [manufacturer_email],
                     bcc=[user_email],
                     reply_to=[user_email],
                 )
                 email.send()
+
+                manufacturer = Manufacturer.objects.filter(
+                    contact_email=manufacturer_email
+                ).first()
+                if manufacturer:
+                    EmailOutreach.objects.create(
+                        user=request.user,
+                        manufacturer=manufacturer,
+                        email_subject=email_subject,
+                        email_body=email_body,
+                    )
 
                 return JsonResponse(
                     {"success": True, "message": "Email sent successfully!"}
@@ -104,6 +108,9 @@ def home(request):
         {"manufacturers_by_product": dict(manufacturers_by_product), "query": query},
     )
 
+
+from django.contrib import messages
+from django.core.mail import send_mail
 
 from django.http import JsonResponse
 

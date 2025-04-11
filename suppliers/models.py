@@ -59,5 +59,8 @@ class EmailOutreach(models.Model):
     email_body = models.TextField()
     sent_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ("user", "manufacturer")  # Ensure no duplicates
+
     def __str__(self):
         return f"Email to {self.manufacturer.name} by {self.user.username}"
