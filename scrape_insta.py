@@ -30,7 +30,6 @@ driver = webdriver.Chrome(
 )
 
 search_terms = [
-    "sandwich",
     "burger",
     "biscuits",
     "pastry",

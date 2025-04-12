@@ -212,7 +212,8 @@
         <a href="{% url 'contact' %}">Contact</a>
       </div>
       <form method="POST" action="{% url 'logout' %}">
-        {% csrf_token %}
+        {% csrf_token %} {% load base64_filters %}
+
         <button type="submit" class="logout-btn">Logout</button>
       </form>
     </div>
@@ -228,7 +229,10 @@
       </form>
 
       {% if query %}
-      <h3>Manufacturers of "{{ query }}"</h3>
+      <h3>
+        Here are list of products and their respective manufacturers that uses
+        "{{ query }}"
+      </h3>
 
       {% if manufacturers_by_product %}
       <div
@@ -270,23 +274,23 @@
             {% endif %} {% if manufacturer.contact_phone != "Not Available" %}
             Contact Phone: {{ manufacturer.contact_phone }}<br />
             {% endif %} {% if manufacturer.contact_email != "Not Available" %}
-            {% if manufacturer.email_sent %}
-            <p style="color: green; margin-top: 8px">
-              <strong>Already Emailed ✅</strong>
-            </p>
-            {% else %}
-            <div
-              id="email-btn-wrapper-{{ manufacturer.contact_email|slugify }}"
-            >
+            {% with manufacturer.contact_email|base64_id as safe_id %}
+            <div id="email-btn-wrapper-{{ safe_id }}">
               <button
                 type="button"
-                onclick="openEmailModal('{{ manufacturer.name }}', '{{ manufacturer.contact_email }}')"
+                onclick="openEmailModal('{{ manufacturer.name }}', '{{ manufacturer.contact_email }}', '{{ safe_id }}')"
+                id="btn-{{ safe_id }}"
               >
                 Send Email
               </button>
             </div>
-
-            {% endif %} {% else %}
+            <p
+              id="status-{{ safe_id }}"
+              style="display: none; color: green; margin-top: 8px"
+            >
+              <strong>Already Emailed ✅</strong>
+            </p>
+            {% endwith %} {% else %}
             <p style="color: red">No email available</p>
             {% endif %}
           </div>
@@ -344,7 +348,7 @@
     </div>
 
     <script>
-      function openEmailModal(name, email) {
+      function openEmailModal(name, email, safeId) {
         const subject = `Business Inquiry Regarding ${name}`;
         const message = `Dear ${name},
 
@@ -361,6 +365,8 @@ Best Regards,
         document.getElementById("modal-manufacturer-name").value = name;
         document.getElementById("modal-email-subject").value = subject;
         document.getElementById("modal-email-body").value = message;
+
+        window.currentSafeId = safeId; // save the safe ID globally
 
         document.getElementById("emailModal").style.display = "block";
       }
@@ -389,16 +395,17 @@ Best Regards,
           })
             .then((res) => res.json())
             .then((data) => {
-              loader.style.display = "none"; // Hide loader
+              loader.style.display = "none";
               closeModal();
 
-              const sentTo = formData.get("manufacturer_email");
-              const wrapperId =
-                "email-btn-wrapper-" + sentTo.replace(/[@.]/g, "-");
-              const wrapper = document.getElementById(wrapperId);
-              if (wrapper) {
-                wrapper.innerHTML = `<p style="color: green; margin-top: 8px"><strong>Already Emailed ✅</strong></p>`;
-              }
+              const safeId = window.currentSafeId;
+              const wrapper = document.getElementById(
+                "email-btn-wrapper-" + safeId
+              );
+              const status = document.getElementById("status-" + safeId);
+
+              if (wrapper) wrapper.style.display = "none";
+              if (status) status.style.display = "block";
 
               let messageBox = document.getElementById("message-box");
               messageBox.innerText = data.message;
@@ -415,6 +422,7 @@ Best Regards,
                 }, 500);
               }, 3000);
             })
+
             .catch((err) => {
               loader.style.display = "none"; // Hide loader on error too
               console.error("Error sending email:", err);
