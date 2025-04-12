@@ -92,6 +92,16 @@
           required
         />
         <button type="submit">Register</button>
+        <div style="margin-top: 15px">
+          <p>Or register with:</p>
+          <a href="{% url 'social:begin' 'google-oauth2' %}?next=/">
+            <img
+              src="https://developers.google.com/identity/images/btn_google_signin_light_normal_web.png"
+              alt="Sign in with Google"
+              style="width: 200px"
+            />
+          </a>
+        </div>
       </form>
       <p>Already registered? <a href="{% url 'login' %}">Login</a></p>
     </div>

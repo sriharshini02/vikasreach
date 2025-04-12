@@ -8,11 +8,14 @@ from .views import contact_view, about_view
 
 
 urlpatterns = [
+    path("", home, name="home"),
     path("contact/", contact_view, name="contact"),
     path("about/", about_view, name="about"),
+    # Custom auth views
     path("logout/", logout_view, name="logout"),
-    path("", home, name="home"),
+    path("register/", register_view, name="register"),
+    path("login/", login_view, name="login"),
+    # JWT endpoints
+    path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    path("register/", register_view, name="register"),  # HTML form-based registeration
-    path("login/", login_view, name="login"),  # HTML form-based login
 ]

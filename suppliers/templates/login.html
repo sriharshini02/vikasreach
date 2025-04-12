@@ -127,6 +127,39 @@
         />
         <button type="submit">Login</button>
       </form>
+      <!-- Add this inside your .container, right after the existing form -->
+      <div style="margin-top: 20px">
+        <p>or</p>
+        <a
+          href="{% url 'social:begin' 'google-oauth2' %}"
+          style="text-decoration: none"
+        >
+          <button
+            style="
+              background-color: white;
+              color: #444;
+              border: 1px solid #ccc;
+              padding: 10px;
+              width: 100%;
+              border-radius: 6px;
+              font-size: 14px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 10px;
+              margin-top: 10px;
+            "
+          >
+            <img
+              src="https://developers.google.com/identity/images/g-logo.png"
+              alt="Google logo"
+              style="width: 18px; height: 18px"
+            />
+            Sign in with Google
+          </button>
+        </a>
+      </div>
+
       <p>
         Not registered yet? <a href="{% url 'register' %}">Register here</a>
       </p>
