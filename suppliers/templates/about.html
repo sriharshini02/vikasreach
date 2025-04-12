@@ -1,42 +1,182 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About Us - VikasReach</title>
+    <title>About Us - AI Supply Bot</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
         margin: 0;
-        padding: 0;
-        text-align: center;
+        font-family: "Roboto", sans-serif; /* Modern font */
+        background-color: #22272e; /* Dark background */
+        color: #d4d4d4; /* Light text */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 97.5vh; /* Ensure body takes full viewport height */
       }
+
+      .header {
+        background-color: #2d333b; /* Darker header */
+        color: #eee;
+        padding: 15px 20px;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .logo {
+        font-size: 20px; /* Slightly smaller logo */
+        font-weight: bold;
+        color: #64b5f6; /* Blue logo */
+        margin-left: auto; /* Push logo to the right */
+        padding-left: 20px;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        flex-grow: 1; /* Allow nav-links to take up space */
+        justify-content: center; /* Center navigation links */
+      }
+
+      .nav-links a {
+        color: #eee;
+        text-decoration: none;
+        margin: 0 15px;
+        font-weight: bold;
+        transition: color 0.3s ease;
+        font-size: 16px; /* Slightly smaller nav link font */
+      }
+
+      .nav-links a:hover {
+        color: #81d4fa; /* Light blue hover */
+      }
+
+      .logout-btn {
+        background-color: #e57373; /* Red accent for logout */
+        color: #fff;
+        border: none;
+        padding: 10px 18px;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+        margin-left: 20px;
+        padding-right: 20px;
+      }
+
+      .logout-btn:hover {
+        background-color: #f44336; /* Darker red hover */
+      }
+
       .container {
-        width: 60%;
-        margin: auto;
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-        margin-top: 50px;
+        flex: 1; /* Allow container to grow and take available vertical space */
+        width: 95%; /* Wider container */
+        max-width: 800px; /* Adjusted max width for about page */
+        margin: 20px auto; /* Reduced top/bottom margin */
+        background-color: #2d333b; /* Darker container */
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center; /* Center content vertically within container */
       }
+
       h2 {
-        color: #007bff;
+        color: #64b5f6; /* Blue heading */
+        margin-bottom: 25px;
+        font-size: 2em; /* Smaller heading */
+      }
+
+      p {
+        color: #bdbdbd;
+        font-size: 1em;
+        line-height: 1.6;
+        margin-bottom: 15px;
+        text-align: left; /* Align text to the left for better readability */
+      }
+
+      .footer {
+        background-color: #2d333b; /* Darker footer */
+        color: #bdbdbd;
+        padding: 10px 20px;
+        border-radius: 0;
+        text-align: center;
+        width: 100%;
+        font-size: 0.8em;
+        display: flex; /* Enable flexbox for centering */
+        justify-content: center; /* Center content horizontally */
+        align-items: center; /* Center content vertically */
+      }
+
+      .footer p {
+        margin: 0; /* Remove default paragraph margins in footer */
+        text-align: center; /* Ensure text inside p is centered */
+      }
+
+      .footer a {
+        color: #81d4fa;
+        text-decoration: underline;
+        margin-left: 5px; /* Add some space between text and link */
       }
     </style>
   </head>
   <body>
+    <div class="header">
+      <div class="logo">AI Supply Bot</div>
+      <div class="nav-links">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'contact' %}">Contact</a>
+      </div>
+      <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %} {% load base64_filters %}
+        <button type="submit" class="logout-btn">Logout</button>
+      </form>
+    </div>
+
     <div class="container">
       <h2>About AI Supply Bot</h2>
       <p>
-        AI Supply Bot is a platform that connects businesses with the right
-        manufacturers. Our mission is to streamline the supply chain and make
-        sourcing easier and more efficient.
+        AI Supply Bot is a cutting-edge platform designed to revolutionize how
+        businesses connect with manufacturers. Our core mission is to simplify
+        and optimize the supply chain, making the process of sourcing materials
+        and finding the right partners more efficient than ever before.
       </p>
       <p>
-        Whether you're looking for suppliers or want to expand your reach, our
-        platform helps you find the right connections.
+        Leveraging the power of artificial intelligence, our platform
+        intelligently matches businesses with manufacturers based on their
+        specific needs and the materials they are looking to sell. This ensures
+        that valuable resources find the right demand, fostering growth and
+        collaboration across industries.
+      </p>
+      <p>
+        Whether you are a business seeking reliable suppliers for your
+        production needs or a manufacturer looking to expand your market reach
+        for your raw materials, AI Supply Bot provides the tools and connections
+        you need to succeed. We believe in building a seamless ecosystem where
+        supply meets demand effortlessly.
+      </p>
+      <p>
+        Our platform offers a user-friendly interface, advanced search
+        capabilities, and direct communication channels, empowering you to build
+        strong and lasting business relationships. Join AI Supply Bot today and
+        experience the future of supply chain management.
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>
+        &copy; 2025 VikasReach |
+        <a href="mailto:vikasreach02@gmail.com">Contact Us</a>
       </p>
     </div>
   </body>
