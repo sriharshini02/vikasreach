@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import logout
 from django.conf import settings
 import requests
+from allauth.account.utils import send_email_confirmation
 
 
 # Template-based Registration (for HTML forms)
@@ -37,10 +38,15 @@ def register_view(request):
             messages.error(request, "Username already exists!")
             return redirect("register")
 
-        user = User.objects.create_user(
-            username=username, email=email, password=password1
-        )
+        user = User.objects.create_user(username=username, email=email)
+        user.set_password(password1)
+        user.is_active = False  # Force email verification
         user.save()
+
+        # 👇 Send verification mail
+        send_email_confirmation(request, user)
+
+        messages.info(request, "Please confirm your email to complete registration.")
         return redirect("login")
 
     return render(request, "register.html")
@@ -48,6 +54,7 @@ def register_view(request):
 
 # Template-based Login
 def login_view(request):
+
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
