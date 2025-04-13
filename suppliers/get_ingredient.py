@@ -37,7 +37,7 @@ User keyword: "{keyword}"
 Here is a list of ingredient names from the database with their IDs:
 {formatted_ingredients}
 
-Your task: Return a Python list of IDs of ingredients that are semantically or partially related to the keyword.
+Your task: Return a Python list of IDs of ingredients that are related to the given ingredient.Be careful while matching the ingredients.Don't give false matches.
 Only return a list like: [1, 2, 5]. If no matches, return an empty list: []
 Don't return any extra text, explanation, or formatting.
 """
