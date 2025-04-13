@@ -3,11 +3,26 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth import logout
+from django.conf import settings
+import requests
 
 
 # Template-based Registration (for HTML forms)
 def register_view(request):
     if request.method == "POST":
+        # reCAPTCHA verification
+        recaptcha_response = request.POST.get("g-recaptcha-response")
+        data = {
+            "secret": settings.GOOGLE_RECAPTCHA_SECRET_KEY,
+            "response": recaptcha_response,
+        }
+        recaptcha_verify = requests.post(
+            "https://www.google.com/recaptcha/api/siteverify", data=data
+        ).json()
+
+        if not recaptcha_verify.get("success"):
+            messages.error(request, "reCAPTCHA failed. Please confirm you are human.")
+            return redirect("register")
         print("POST data received")  # Debug print
         username = request.POST["username"]
         email = request.POST["email"]
