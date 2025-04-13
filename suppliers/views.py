@@ -110,10 +110,18 @@ def home(request):
                     {"success": False, "message": f"Error sending email: {str(e)}"}
                 )
 
+    # Sort the output by the number of manufacturers for each product category
+    sorted_manufacturers_by_product = sorted(
+        manufacturers_by_product.items(), key=lambda item: len(item[1]), reverse=True
+    )
+
     return render(
         request,
         "home.html",
-        {"manufacturers_by_product": dict(manufacturers_by_product), "query": query},
+        {
+            "manufacturers_by_product": dict(sorted_manufacturers_by_product),
+            "query": query,
+        },
     )
 
 
