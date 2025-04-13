@@ -9,19 +9,27 @@
       body {
         margin: 0;
         font-family: "Roboto", sans-serif; /* Modern font */
-        background-color: #22272e; /* Dark background */
+        background-color: #22272e; /* Dark base background */
         color: #d4d4d4; /* Light text */
         display: flex;
         flex-direction: column;
         align-items: center;
         min-height: 97.5vh;
+        background-image: linear-gradient(
+          to bottom right,
+          rgba(0, 6, 14, 0.7),
+          rgba(1, 8, 17, 0.7)
+        ); /* Darker subtle gradient */
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Slightly darker shadow */
+        backdrop-filter: blur(8px); /* Adjust blur intensity */
+        -webkit-backdrop-filter: blur(8px); /* For Safari */
       }
 
       .header {
-        background-color: #2d333b; /* Darker header */
+        background-color: #222831; /* Darker header */
         color: #eee;
-        padding: 15px 20px;
-        width: 100%;
+        padding: 15px 15px;
+        width: 98%;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -31,7 +39,7 @@
       .logo {
         font-size: 20px; /* Slightly smaller logo */
         font-weight: bold;
-        color: #64b5f6; /* Blue logo */
+        color: #52a0df; /* Blue logo */
         margin-left: auto; /* Push logo to the right */
         padding-left: 10px;
       }
@@ -61,7 +69,7 @@
         width: 95%; /* Wider container */
         max-width: 1200px;
         margin: 20px auto; /* Reduced top/bottom margin */
-        background-color: #2d333b; /* Darker container */
+        background-color: #1f2630; /* Darker container */
         padding: 30px;
         border-radius: 8px;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
@@ -102,7 +110,7 @@
         margin: 10px 0;
         width: 80%;
         max-width: 400px;
-        background-color: #37474f; /* Darker input */
+        background-color: #425762; /* Darker input */
         border: 1px solid #546e7a;
         border-radius: 4px;
         font-size: 1em;
@@ -167,7 +175,7 @@
       }
 
       .product-card {
-        background-color: #37474f; /* Darker card */
+        background-color: #30424b; /* Darker card */
         padding: 15px;
         border-radius: 6px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -175,13 +183,13 @@
       }
 
       .product-card h4 {
-        color: #81d4fa;
+        color: #59a9ce;
         margin-bottom: 10px;
         font-size: 1.1em;
       }
 
       .manufacturer-info {
-        background-color: #455a64; /* Even darker info */
+        background-color: #3a515c; /* Even darker info */
         padding: 12px;
         margin-bottom: 8px;
         border-radius: 4px;
@@ -194,14 +202,14 @@
       }
 
       .manufacturer-link {
-        color: #81d4fa;
+        color: #67b9e0;
         text-decoration: underline;
         word-break: break-word;
         font-size: 0.9em;
       }
 
       .manufacturer-link:hover {
-        color: #b3e5fc;
+        color: #248fc1;
       }
 
       .no-email {
@@ -210,7 +218,7 @@
       }
 
       .email-button {
-        background-color: #06770a; /* Green email button */
+        background-color: #046007; /* Green email button */
         color: #fff;
         border: none;
         padding: 8px 12px;
@@ -227,7 +235,7 @@
 
       .email-status {
         display: none;
-        color: #aed581; /* Light green success */
+        color: #0b6d06; /* Light green success */
         margin-top: 6px;
         font-weight: bold;
         font-size: 0.9em;
@@ -238,7 +246,7 @@
         top: -50px;
         left: 50%;
         transform: translateX(-50%);
-        background-color: #4caf50;
+        background-color: #328135;
         color: white;
         padding: 8px 15px;
         border-radius: 4px;
@@ -281,8 +289,8 @@
         padding: 8px;
         margin-top: 5px;
         margin-bottom: 10px;
-        background-color: #455a64;
-        border: 1px solid #546e7a;
+        background-color: #3a515b;
+        border: 1px solid #3d5c6a;
         border-radius: 4px;
         font-size: 1em;
         color: #eee;
@@ -290,7 +298,7 @@
       }
 
       #emailModal button {
-        background-color: #64b5f6;
+        background-color: #4a8abf;
         color: #fff;
         border: none;
         padding: 8px 16px;
@@ -302,7 +310,7 @@
       }
 
       #emailModal button:hover {
-        background-color: #42a5f5;
+        background-color: #308fdc;
       }
 
       #loading-overlay {
@@ -321,8 +329,8 @@
       }
 
       .loading-spinner {
-        border: 6px solid #546e7a;
-        border-top: 6px solid #64b5f6;
+        border: 6px solid #435761;
+        border-top: 6px solid #4477a0;
         border-radius: 50%;
         width: 40px;
         height: 40px;
@@ -343,7 +351,7 @@
       }
 
       .footer {
-        background-color: #2d333b; /* Darker footer */
+        background-color: #222831; /* Darker footer */
         color: #bdbdbd;
         padding: 10px 20px;
         border-radius: 0;
@@ -354,14 +362,14 @@
       }
 
       .footer a {
-        color: #81d4fa;
+        color: #19546f;
         text-decoration: underline;
       }
     </style>
   </head>
   <body>
     <div class="header">
-      <div class="logo">AI Supply Bot</div>
+      <div class="logo">🤖 AI Supply Bot</div>
       <div class="nav-links">
         <a href="{% url 'home' %}">Home</a>
         <a href="{% url 'about' %}">About</a>
@@ -381,14 +389,14 @@
           manufacturers who need your material.
         </p>
 
-        <form method="POST">
+        <form method="POST" id="ingredient-form">
           {% csrf_token %}
           <label for="query">Enter Raw Material to Sell:</label>
           <input
             type="text"
             name="query"
             id="query"
-            placeholder="e.g., Sugar"
+            placeholder="e.g., Sugar, salt (comma-seperated)"
             required
           />
           <button type="submit">Search</button>
@@ -492,7 +500,7 @@
 
     <div id="loading-overlay">
       <div class="loading-spinner"></div>
-      <p>Sending your email...</p>
+      <p id="loading-message">Sending Mail...</p>
     </div>
 
     <script>
@@ -522,6 +530,16 @@ Best Regards,
       function closeModal() {
         document.getElementById("emailModal").style.display = "none";
       }
+      document
+        .getElementById("ingredient-form")
+        .addEventListener("submit", function () {
+          const overlay = document.getElementById("loading-overlay");
+          const message = document.getElementById("loading-message");
+
+          message.textContent =
+            "Fetching manufacturer details... Please wait. This may take a few seconds.";
+          overlay.style.display = "flex";
+        });
 
       document
         .getElementById("custom-email-form")

@@ -9,17 +9,24 @@
       body {
         margin: 0;
         font-family: "Roboto", sans-serif; /* Modern font */
-        background-color: #22272e; /* Dark background */
+        background-color: #22272e; /* Dark base background */
         color: #d4d4d4; /* Light text */
         display: flex;
         flex-direction: column;
         align-items: center;
         min-height: 97.5vh;
-        min-width: 50vb; /* Ensure body takes full viewport height */
+        background-image: linear-gradient(
+          to bottom right,
+          rgba(0, 6, 14, 0.7),
+          rgba(1, 8, 17, 0.7)
+        ); /* Darker subtle gradient */
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Slightly darker shadow */
+        backdrop-filter: blur(8px); /* Adjust blur intensity */
+        -webkit-backdrop-filter: blur(8px); /* For Safari */
       }
 
       .header {
-        background-color: #2d333b; /* Darker header */
+        background-color: #222831; /* Darker header */
         color: #eee;
         padding: 15px 20px;
         width: 100%;
@@ -133,7 +140,7 @@
       }
 
       .footer {
-        background-color: #2d333b; /* Darker footer */
+        background-color: #222831; /* Darker footer */
         color: #bdbdbd;
         padding: 10px 20px;
         border-radius: 0;
@@ -159,7 +166,7 @@
   </head>
   <body>
     <div class="header">
-      <div class="logo">AI Supply Bot</div>
+      <div class="logo">🤖 AI Supply Bot</div>
       <div class="nav-links">
         <a href="{% url 'home' %}">Home</a>
         <a href="{% url 'about' %}">About</a>

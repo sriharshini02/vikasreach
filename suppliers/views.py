@@ -12,6 +12,7 @@ from suppliers.models import (
     IngredientProduct,
     EmailOutreach,
 )
+from suppliers.get_ingredient import get_keyword_to_ingredient_ids
 
 
 @login_required
@@ -23,10 +24,20 @@ def home(request):
         if "query" in request.POST:
             query = request.POST.get("query", "").strip().lower()
             if query:
-                try:
-                    ingredient = Ingredient.objects.get(name__iexact=query)
+                # Get all ingredients from DB as (id, name)
+                all_ingredients = list(Ingredient.objects.values_list("id", "name"))
+
+                # Use Gemini to get relevant ingredient IDs
+                matched_data = get_keyword_to_ingredient_ids(query, all_ingredients)
+
+                # Flatten the matched IDs
+                matched_ids = set()
+                for ids in matched_data.values():
+                    matched_ids.update(ids)
+
+                if matched_ids:
                     product_links = IngredientProduct.objects.filter(
-                        ingredient=ingredient
+                        ingredient_id__in=matched_ids
                     )
                     product_ids = product_links.values_list("product_id", flat=True)
                     products = Product.objects.filter(id__in=product_ids)
@@ -53,9 +64,6 @@ def home(request):
                                         "email_sent": already_sent,
                                     }
                                 )
-
-                except Ingredient.DoesNotExist:
-                    pass
 
         elif "manufacturer_email" in request.POST:
             manufacturer_email = request.POST.get("manufacturer_email")
