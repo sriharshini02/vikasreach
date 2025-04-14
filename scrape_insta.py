@@ -30,13 +30,17 @@ driver = webdriver.Chrome(
 )
 
 search_terms = [
-    "burger",
-    "biscuits",
-    "pastry",
-    "bread",
-    "soda",
-    "paneer",
-    "fruit+salad",
+    "cosmetics",
+    "pizza",
+    "yogurd",
+    "cheese",
+    "groceries",
+    "sausage",
+    "mayonnaise",
+    "chocolate+syrup",
+    "nuts+dessert",
+    "brownies",
+    "pudding",
 ]
 
 for term in search_terms:

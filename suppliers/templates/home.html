@@ -161,7 +161,7 @@
         background-color: #6e120b; /* Darker red hover */
       }
       h3 {
-        color: #81d4fa; /* Light blue heading */
+        color: #deeff7; /* Light blue heading */
         margin-top: 30px;
         margin-bottom: 15px;
         font-size: 1.2em;
@@ -376,6 +376,96 @@
         color: #19546f;
         text-decoration: underline;
       }
+      .product-table-container {
+  margin-bottom: 40px;
+  width: 100%;
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.product-title {
+  font-size: 1.5em;
+  margin: 20px 0 10px;
+  color: #64b5f6;
+  text-align: left;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.manufacturer-table-wrapper {
+  width: 300%;
+  overflow-x: auto;
+  border-radius: 8px;
+  background-color: #2a2f38;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.manufacturer-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #d4d4d4;
+}
+
+.manufacturer-table th,
+.manufacturer-table td {
+  border: 1px solid #3d4752;
+  padding: 14px 18px;
+  text-align: left;
+  word-wrap: break-word;
+  font-size: 15px;
+  width: 20%; /* Ensure all 5 columns have equal width */
+}
+
+.manufacturer-table th {
+  background-color: #1f2630;
+  color: #a8d4e9;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.manufacturer-table td {
+  background-color: #2a2f38;
+}
+
+.manufacturer-link {
+  color: #67b9e0;
+  text-decoration: underline;
+  word-break: break-word;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.manufacturer-link:hover {
+  color: #248fc1;
+}
+
+.no-email {
+  color: #92130a;
+  font-weight: bold;
+}
+
+.email-button {
+  background-color: #046007;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.9em;
+  transition: background-color 0.3s ease;
+}
+
+.email-button:hover {
+  background-color: #034c06;
+}
+
+.email-status {
+  color: #0b6d06;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+
     </style>
   </head>
   <body>
@@ -422,45 +512,62 @@
         {% if manufacturers_by_product %}
         <div class="manufacturers-grid">
           {% for product, manufacturers in manufacturers_by_product.items %}
-          <div class="product-card">
-            <h4>{{ product|title }}</h4>
-            {% for manufacturer in manufacturers %}
-            <div class="manufacturer-info">
-              <strong>{{ manufacturer.name }}</strong><br />
-              {% if manufacturer.website != "#" %} Website:
-              <a
-                href="{{ manufacturer.website }}"
-                target="_blank"
-                class="manufacturer-link"
-                >{{ manufacturer.website }}</a
-              ><br />
-              {% endif %} {% if manufacturer.contact_email != "Not Available" %}
-              Contact Email: {{ manufacturer.contact_email }}<br />
-              {% endif %} {% if manufacturer.contact_phone != "Not Available" %}
-              Contact Phone: {{ manufacturer.contact_phone }}<br />
-              {% endif %} {% if manufacturer.contact_email != "Not Available" %}
-              {% with manufacturer.contact_email|base64_id as safe_id %}
-              <div id="email-btn-wrapper-{{ safe_id }}">
-                <button
-                  type="button"
-                  onclick="openEmailModal('{{ manufacturer.name }}', '{{ manufacturer.contact_email }}', '{{ safe_id }}')"
-                  id="btn-{{ safe_id }}"
-                  class="email-button"
-                >
-                  Send Email
-                </button>
-              </div>
-              <p id="status-{{ safe_id }}" class="email-status">
-                <strong>Already Emailed ✅</strong>
-              </p>
-              {% endwith %} {% else %}
-              <p class="no-email">No email available</p>
+  <div class="product-table-container">
+    <h4 class="product-title">{{ product|title }}</h4>
+    <div class="manufacturer-table-wrapper">
+    <table class="manufacturer-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Website</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for manufacturer in manufacturers %}
+          <tr>
+            <td>{{ manufacturer.name }}</td>
+            <td>
+              {% if manufacturer.website != "#" %}
+                <a href="{{ manufacturer.website }}" target="_blank" class="manufacturer-link">
+                  {{ manufacturer.website }}
+                </a>
+              {% else %}
+                Not Available
               {% endif %}
-            </div>
-            {% endfor %}
-          </div>
-          {% endfor %}
-        </div>
+            </td>
+            <td>{{ manufacturer.contact_email|default:"Not Available" }}</td>
+            <td>{{ manufacturer.contact_phone|default:"Not Available" }}</td>
+            <td>
+              {% if manufacturer.contact_email != "Not Available" %}
+                {% with manufacturer.contact_email|base64_id as safe_id %}
+                  <div id="email-btn-wrapper-{{ safe_id }}">
+                    <button
+                      type="button"
+                      onclick="openEmailModal('{{ manufacturer.name }}', '{{ manufacturer.contact_email }}', '{{ safe_id }}')"
+                      id="btn-{{ safe_id }}"
+                      class="email-button"
+                    >
+                      Send Email
+                    </button>
+                  </div>
+                  <p id="status-{{ safe_id }}" class="email-status">
+                    <strong>Already Emailed ✅</strong>
+                  </p>
+                {% endwith %}
+              {% else %}
+                <span class="no-email">Not Available</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+{% endfor %}
+</div>
         {% else %}
         <p>No manufacturers found.</p>
         {% endif %} {% endif %}
