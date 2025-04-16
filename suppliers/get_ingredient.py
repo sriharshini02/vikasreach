@@ -30,14 +30,15 @@ def get_keyword_to_ingredient_ids(user_query, ingredient_list):
 
     for keyword in keywords:
         prompt = f"""
-You are an expert at semantic ingredient matching.
+You are an expert at ingredient matching.
 
 User keyword: "{keyword}"
 
 Here is a list of ingredient names from the database with their IDs:
 {formatted_ingredients}
 
-Your task: Return a Python list of IDs of ingredients that are related to the given ingredient.Be careful while matching the ingredients.Don't give false matches.
+Your task: Return a Python list of IDs of ingredients that are strictly matched and have completely same meaning as the given ingredient without any misunderstanding.
+For example : cotton candy and cotton are not same. Most importantly we can't consider empty string as a match. 
 Only return a list like: [1, 2, 5]. If no matches, return an empty list: []
 Don't return any extra text, explanation, or formatting.
 """
@@ -56,7 +57,7 @@ Don't return any extra text, explanation, or formatting.
         except Exception as e:
             print(f"❌ Gemini error for '{keyword}':", e)
             result[keyword] = []
-
+    print(result)
     return result
 
 

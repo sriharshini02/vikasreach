@@ -30,11 +30,6 @@ driver = webdriver.Chrome(
 )
 
 search_terms = [
-    "cosmetics",
-    "pizza",
-    "yogurd",
-    "cheese",
-    "groceries",
     "sausage",
     "mayonnaise",
     "chocolate+syrup",
