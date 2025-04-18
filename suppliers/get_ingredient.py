@@ -19,7 +19,7 @@ def get_keyword_to_ingredient_ids(user_query, ingredient_list):
     if not user_query.strip() or not ingredient_list:
         return {}
 
-    model = genai.GenerativeModel("gemini-1.5-pro-latest")  # type: ignore
+    model = genai.GenerativeModel("gemini-2.0-flash-lite")  # type: ignore
 
     formatted_ingredients = "\n".join(
         [f"{id} -> {name}" for id, name in ingredient_list]

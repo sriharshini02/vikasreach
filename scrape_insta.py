@@ -29,14 +29,7 @@ driver = webdriver.Chrome(
     service=Service(ChromeDriverManager().install()), options=options
 )
 
-search_terms = [
-    "sausage",
-    "mayonnaise",
-    "chocolate+syrup",
-    "nuts+dessert",
-    "brownies",
-    "pudding",
-]
+search_terms = ["naan", "chocos", "salad", "soup"]
 
 for term in search_terms:
     search_term = term.replace(" ", "+")

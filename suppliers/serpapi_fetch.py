@@ -80,7 +80,7 @@ def generate_response(user_input):
     )
 
     model = genai.GenerativeModel(  # type: ignore
-        model_name="gemini-2.0-pro-exp-02-05",
+        model_name="gemini-2.0-flash",
         generation_config={
             "temperature": 0.1,
             "top_p": 0.95,
