@@ -19,7 +19,7 @@ def get_keyword_to_ingredient_ids(user_query, ingredient_list):
     if not user_query.strip() or not ingredient_list:
         return {}
 
-    model = genai.GenerativeModel("gemini-1.5-pro-latest")  # type: ignore
+    model = genai.GenerativeModel("gemini-1.5-flash-8b")  # type: ignore
 
     formatted_ingredients = "\n".join(
         [f"{id} -> {name}" for id, name in ingredient_list]
@@ -37,11 +37,22 @@ User keyword: "{keyword}"
 Here is a list of ingredient names from the database with their IDs:
 {formatted_ingredients}
 
+<<<<<<< HEAD
 Your task: Return a Python list of IDs of ingredients that are strictly matched and have completely same meaning as the given ingredient without any misunderstanding.
 For example : cotton candy and cotton are not same. Most importantly we can't consider empty string as a match. 
 Only return a list like: [1, 2, 5]. If no matches, return an empty list: []
 Don't return any extra text, explanation, or formatting.
 """
+=======
+Your task: Return a Python list of IDs of ingredients that are an EXACT match to the given keyword.
+The matching should be precise and should not include partial matches or ingredients containing the keyword as a substring.
+For example:
+- If the keyword is "cotton", do not match "cottonseed" or "cottonseed oil".
+- If the keyword is "sunflower", do not match "sunflower oil".
+
+Only return a list like: [1, 2, 5]. If no exact matches are found, return an empty list: [].
+Don't return any extra text, explanation, or formatting."""
+>>>>>>> f28cee76c311e39a213887dcdf3ef61348a777fe
 
         try:
             response = model.generate_content(prompt)
