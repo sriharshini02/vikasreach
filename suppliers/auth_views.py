@@ -2,36 +2,29 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from django.contrib.auth.hashers import make_password
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
 from django.contrib.auth import logout
-
-
-# API-based Registration
-@api_view(["POST"])
-def register_user(request):
-    """Register a new user via API"""
-    data = request.data
-    if User.objects.filter(username=data["username"]).exists():
-        return Response(
-            {"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST
-        )
-
-    user = User.objects.create(
-        username=data["username"],
-        email=data["email"],
-        password=make_password(data["password"]),
-    )
-    return Response(
-        {"message": "User created successfully"}, status=status.HTTP_201_CREATED
-    )
+from django.conf import settings
+import requests
+from allauth.account.utils import send_email_confirmation
 
 
 # Template-based Registration (for HTML forms)
-def register(request):
+def register_view(request):
     if request.method == "POST":
+        # reCAPTCHA verification
+        recaptcha_response = request.POST.get("g-recaptcha-response")
+        data = {
+            "secret": settings.GOOGLE_RECAPTCHA_SECRET_KEY,
+            "response": recaptcha_response,
+        }
+        recaptcha_verify = requests.post(
+            "https://www.google.com/recaptcha/api/siteverify", data=data
+        ).json()
+
+        if not recaptcha_verify.get("success"):
+            messages.error(request, "reCAPTCHA failed. Please confirm you are human.")
+            return redirect("register")
+        print("POST data received")  # Debug print
         username = request.POST["username"]
         email = request.POST["email"]
         password1 = request.POST["password1"]
@@ -45,11 +38,15 @@ def register(request):
             messages.error(request, "Username already exists!")
             return redirect("register")
 
-        user = User.objects.create_user(
-            username=username, email=email, password=password1
-        )
+        user = User.objects.create_user(username=username, email=email)
+        user.set_password(password1)
+        user.is_active = False  # Force email verification
         user.save()
-        messages.success(request, "Account created successfully!")
+
+        # 👇 Send verification mail
+        send_email_confirmation(request, user)
+
+        messages.info(request, "Please confirm your email to complete registration.")
         return redirect("login")
 
     return render(request, "register.html")
@@ -57,6 +54,7 @@ def register(request):
 
 # Template-based Login
 def login_view(request):
+
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
@@ -64,7 +62,6 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, "Login successful!")
             return redirect("home")  # Redirect to dashboard or home
         else:
             messages.error(request, "Invalid username or password")

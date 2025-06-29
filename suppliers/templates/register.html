@@ -1,92 +1,346 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <title>Register - AI Supply Bot</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Register</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: radial-gradient(
+          circle,
+          rgba(30, 58, 138, 0.7),
+          #0f172a
+        ); /* Blue-ish radial gradient */
+        color: #e0e0e0;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
-        margin: 0;
-      }
-
-      .container {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        width: 300px;
-        text-align: center;
-      }
-
-      h2 {
-        color: #333;
-      }
-
-      input {
-        width: 100%;
-        padding: 10px;
-        margin: 8px 0;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-      }
-
-      button {
-        width: 100%;
-        padding: 10px;
-        background-color: #28a745;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
+        min-height: 100vh;
+        overflow: auto; /* Allow scrolling if content overflows */
         font-size: 16px;
       }
 
-      button:hover {
-        background-color: #218838;
+      #particles-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
       }
 
-      p {
-        margin-top: 10px;
+      .register-container {
+        background-color: rgba(
+          23,
+          37,
+          64,
+          0.8
+        ); /* Slightly transparent blue container */
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+        width: 100%;
+        max-width: 450px; /* Slightly wider to accommodate inline labels */
+        position: relative;
+        border: 1px solid rgba(31, 41, 55, 0.7); /* Slightly transparent border */
+        text-align: center;
       }
 
-      a {
-        color: #007bff;
+      .register-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .register-header h1 {
+        font-size: 30px;
+        color: #60a5fa; /* Light blue color */
+        margin-bottom: 8px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+      }
+
+      .register-header h2 {
+        font-size: 20px;
+        color: #cbd5e1;
+        margin-bottom: 25px;
+      }
+
+      .form-group {
+        display: flex; /* Enable flex layout for label and input */
+        align-items: center; /* Vertically align label and input */
+        margin-bottom: 15px;
+      }
+
+      label {
+        font-size: 16px;
+        color: #94a3b8;
+        width: 150px; /* Fixed width for labels */
+        margin-right: 15px;
+        text-align: left;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
+        flex-grow: 1; /* Allow input to take remaining width */
+        padding: 12px;
+        background-color: rgba(31, 41, 55, 0.7);
+        border: 1px solid rgba(51, 65, 85, 0.7);
+        border-radius: 4px;
+        color: #e2e8f0;
+        font-size: 16px;
+        box-sizing: border-box;
+      }
+
+      input[type="text"]:focus,
+      input[type="email"]:focus,
+      input[type="password"]:focus {
+        outline: none;
+        border-color: #60a5fa;
+        box-shadow: 0 0 6px rgba(96, 165, 250, 0.5);
+        background-color: rgba(39, 46, 71, 0.8);
+      }
+
+      button[type="submit"] {
+        background-color: #2563eb; /* Blue button */
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 17px;
+        width: auto;
+        min-width: 180px;
+        display: block;
+        margin: 20px auto;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      }
+
+      button[type="submit"]:hover {
+        background-color: #1e40af;
+      }
+
+      .separator {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: #cbd5e1;
+        margin: 25px 0;
+        font-size: 16px;
+      }
+
+      .separator::before,
+      .separator::after {
+        content: "";
+        flex-grow: 1;
+        background-color: #475569;
+        height: 1px;
+        margin: 0 15px;
+      }
+
+      .social-login {
+        margin-bottom: 25px;
+      }
+
+      .social-btn {
+        background-color: rgba(31, 41, 55, 0.7);
+        color: #e2e8f0;
+        border: 1px solid rgba(51, 65, 85, 0.7);
+        padding: 11px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 15px;
+        display: inline-flex; /* Arrange icon and text inline */
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: auto; /* Adjust width to content */
+        min-width: 200px;
+        text-decoration: none;
+        margin: 10px auto; /* Center social button */
+        transition: border-color 0.3s ease, background-color 0.3s ease;
+      }
+
+      .social-btn:hover {
+        border-color: #60a5fa;
+        background-color: rgba(39, 46, 71, 0.8);
+      }
+
+      .social-btn img {
+        height: 20px;
+        filter: brightness(1.1);
+      }
+
+      .login-link {
+        text-align: center;
+        font-size: 14px;
+        color: #cbd5e1;
+        margin-top: 25px;
+      }
+
+      .login-link a {
+        color: #60a5fa;
         text-decoration: none;
       }
 
-      a:hover {
+      .login-link a:hover {
         text-decoration: underline;
+      }
+
+      .alert-container {
+        margin-bottom: 20px;
+      }
+
+      .alert {
+        padding: 10px;
+        border-radius: 4px;
+        font-size: 14px;
+        text-align: center;
+        background-color: rgba(31, 41, 55, 0.7);
+        border: 1px solid rgba(51, 65, 85, 0.7);
+        color: #e2e8f0;
+      }
+
+      .alert.success {
+        background-color: rgba(22, 78, 59, 0.7);
+        color: #a7f3d0;
+        border: 1px solid rgba(16, 185, 129, 0.7);
+      }
+
+      .alert.error {
+        background-color: rgba(69, 10, 10, 0.7);
+        color: #fecaca;
+        border: 1px solid rgba(239, 68, 68, 0.7);
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <h2>Register</h2>
-      <form method="POST">
+    <div id="particles-container"></div>
+    <div class="register-container">
+      <div class="register-header">
+        <h1>AI Supply Bot</h1>
+        <h2>Create an Account</h2>
+      </div>
+
+      {% if messages %}
+      <div class="alert-container">
+        {% for message in messages %}
+        <div class="alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <form method="POST" action="">
         {% csrf_token %}
-        <input type="text" name="username" placeholder="Username" required />
-        <input type="email" name="email" placeholder="Email" required />
-        <input
-          type="password"
-          name="password1"
-          placeholder="Password"
-          required
-        />
-        <input
-          type="password"
-          name="password2"
-          placeholder="Confirm Password"
-          required
-        />
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Username"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Email"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password1"
+            placeholder="Password"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="confirm_password">Confirm Password</label>
+          <input
+            type="password"
+            id="confirm_password"
+            name="password2"
+            placeholder="Confirm Password"
+            required
+          />
+        </div>
+        <div
+          class="g-recaptcha"
+          data-sitekey="6LdXBBcrAAAAAHkyZCcllNS-YXT-18bvMuOzElfL"
+        ></div>
         <button type="submit">Register</button>
       </form>
-      <p>Already registered? <a href="{% url 'login' %}">Login</a></p>
+
+      <div class="separator">or</div>
+
+      <div class="social-login">
+        <a
+          href="{% url 'social:begin' 'google-oauth2' %}?next=/"
+          class="social-btn"
+        >
+          <img
+            src="https://developers.google.com/identity/images/g-logo.png"
+            alt="Google"
+          />
+          Sign up with Google
+        </a>
+      </div>
+
+      <div class="login-link">
+        Already have an account? <a href="{% url 'login' %}">Log In</a>
+      </div>
     </div>
+
+    <script>
+      const particlesContainer = document.getElementById("particles-container");
+      const numParticles = 40;
+
+      function createParticle() {
+        const particle = document.createElement("div");
+        particle.style.position = "absolute";
+        particle.style.backgroundColor =
+          "rgba(96, 165, 250, 0.2)"; /* Light blue glitter */
+        particle.style.borderRadius = "50%";
+        particle.style.width = `${Math.random() * 2 + 1}px`;
+        particle.style.height = particle.style.width;
+        particle.style.opacity = Math.random() * 0.6 + 0.2;
+        particle.style.animation = `glitter ${
+          Math.random() * 4 + 3
+        }s infinite alternate`;
+
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight;
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+
+        particlesContainer.appendChild(particle);
+      }
+
+      for (let i = 0; i < numParticles; i++) {
+        createParticle();
+      }
+
+      const styleSheet = document.createElement("style");
+      styleSheet.type = "text/css";
+      styleSheet.innerText = `@keyframes glitter {
+            from { transform: scale(1); opacity: 0.2; }
+            to { transform: scale(1.1); opacity: 0.4; }
+        }`;
+      document.head.appendChild(styleSheet);
+    </script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   </body>
 </html>

@@ -1,206 +1,775 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>VikasReach - Home</title>
+    <title>AI Supply Bot - Home</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+      body {
+        margin: 0;
+        font-family: "Roboto", sans-serif; /* Modern font */
+        background-color: #22272e; /* Dark base background */
+        color: #d4d4d4; /* Light text */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 97.5vh;
+        background-image: linear-gradient(
+          to bottom right,
+          rgba(0, 6, 14, 0.7),
+          rgba(1, 8, 17, 0.7)
+        ); /* Darker subtle gradient */
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Slightly darker shadow */
+        backdrop-filter: blur(8px); /* Adjust blur intensity */
+        -webkit-backdrop-filter: blur(8px); /* For Safari */
+      }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background-color: #2c3e50;
-            color: white;
-            border-bottom: 2px solid #34495e;
-        }
+      .header {
+        background-color: #222831; /* Darker header */
+        color: #eee;
+        padding: 8px 10px; /* Added some horizontal padding */
+        width: 100%; /* Slightly reduced width */
+        max-width: 1500px; /* Keep max width */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        margin: 0 auto; /* Center the header */
+      }
 
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-weight: 600;
-            transition: color 0.3s ease;
-        }
+      .logo {
+        font-size: 20px; /* Slightly smaller logo */
+        font-weight: bold;
+        color: #52a0df; /* Blue logo */
+        margin-left: auto; /* Push logo to the right */
+        padding-left: 10px;
+      }
 
-        .nav-links a:hover {
-            color: #3498db;
-        }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        flex-grow: 1; /* Allow nav-links to take up space */
+        justify-content: center; /* Center navigation links */
+      }
 
-        .logout-btn {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
+      .nav-links a {
+        color: #eee;
+        text-decoration: none;
+        margin: 0 15px;
+        font-weight: bold;
+        transition: color 0.3s ease;
+        font-size: 16px; /* Slightly smaller nav link font */
+      }
 
-        .logout-btn:hover {
-            background-color: #c0392b;
-        }
+      .nav-links a:hover {
+        color: #81d4fa; /* Light blue hover */
+      }
 
-        .container {
-            width: 80%;
-            margin: 20px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            flex-grow: 1; /* Allow container to grow and push footer down */
-        }
+      .container {
+        flex: 1;
+        width: 95%; /* Wider container */
+        max-width: 1400px;
+        margin: 15px auto; /* Reduced top/bottom margin and centered */
+        background-color: #1f2630; /* Darker container */
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-sizing: border-box; /* Ensure padding doesn't increase width */
+      }
 
-        h2, h3 {
-            color: #2c3e50;
-            text-align: center;
-        }
+      .content-wrapper {
+        width: 95%; /* Slightly wider content wrapper within the container */
+        max-width: 1200px; /* Adjust max width for content */
+      }
 
-        input, button {
-            padding: 12px;
-            margin: 10px 0;
-            width: calc(100% - 24px);
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
+      h2 {
+        color: #64b5f6; /* Blue heading */
+        margin-bottom: 25px;
+        font-size: 2em; /* Smaller heading */
+      }
 
-        button {
-            background-color: #3498db;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-            width: auto;
-            margin: 10px auto;
-            display: block;
-        }
+      .description {
+        color: #bdbdbd;
+        font-size: 1em;
+        margin-bottom: 20px;
+      }
 
-        button:hover {
-            background-color: #2980b9;
-        }
+      label {
+        display: block;
+        margin-top: 20px;
+        font-size: 1em;
+        color: #bdbdbd;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
 
-        ul {
-            list-style: none;
-            padding: 0;
-        }
+      input[type="text"] {
+        padding: 10px;
+        margin: 10px 0;
+        width: 80%;
+        max-width: 400px;
+        background-color: #1b323e; /* Darker input */
+        border: 1px solid #abc7d3;
+        border-radius: 4px;
+        font-size: 1em;
+        color: #ffffff;
+        box-sizing: border-box;
+      }
 
-        li {
-            background: #ecf0f1;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+      input[type="text"]:focus {
+        outline: none;
+        border-color: #a8d4e9;
+        box-shadow: 0 0 4px rgba(169, 194, 205, 0.5);
+      }
 
-        .message-box {
-            position: fixed;
-            top: -50px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            display: none;
-            transition: top 0.5s ease-in-out;
-            z-index: 100;
-        }
+      button[type="submit"] {
+        background-color: #64b5f6; /* Blue button */
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 1em;
+        margin-top: 20px;
+        transition: background-color 0.3s ease;
+      }
 
-        .footer {
-            margin-top: auto; /* Push footer to the bottom */
-            padding: 15px;
-            background: #2c3e50;
-            color: white;
-            text-align: center;
-            border-top: 2px solid #34495e;
-        }
+      button[type="submit"]:hover {
+        background-color: #08477b;
+      }
+      .logout-btn {
+        background-color: #e57373; /* Red accent for logout */
+        color: #fff;
+        border: none;
+        padding: 10px 18px;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+        margin-left: 20px;
+        padding-right: 40px;
+        padding-bottom: 30px;
+      }
 
-        .footer a {
-            color: #3498db;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
+      .logout-btn:hover {
+        background-color: #6e120b; /* Darker red hover */
+      }
+      h3 {
+        color: #deeff7; /* Light blue heading */
+        margin-top: 30px;
+        margin-bottom: 15px;
+        font-size: 1.2em;
+        text-align: left; /* Align heading to the left within the content */
+      }
 
-        .footer a:hover {
-            color: white;
+      .manufacturers-grid {
+        display: grid;
+        grid-template-columns: repeat(
+          4,
+          minmax(0, 1fr)
+        ); /* Explicitly set 4 equal columns */
+        gap: 15px; /* Increased gap for better spacing */
+        margin-top: 20px;
+      }
+
+      .product-card {
+        background-color: #1f333e; /* Darker card */
+        padding: 15px;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        text-align: left;
+        box-sizing: border-box; /* Ensure padding doesn't increase width */
+      }
+
+      .product-card h4 {
+        color: #59a9ce;
+        margin-bottom: 10px;
+        font-size: 1.1em;
+      }
+
+      .manufacturer-info {
+        background-color: #314650; /* Even darker info */
+        padding: 12px;
+        margin-bottom: 8px;
+        border-radius: 4px;
+        box-shadow: 0 1px 2px rgba(9, 142, 219, 0.2);
+      }
+
+      .manufacturer-info strong {
+        color: #f9efef;
+        font-size: 1em;
+      }
+
+      .manufacturer-link {
+        color: #67b9e0;
+        text-decoration: underline;
+        word-break: break-word;
+        font-size: 0.9em;
+      }
+
+      .manufacturer-link:hover {
+        color: #248fc1;
+      }
+
+      .no-email {
+        color: #92130a; /* Red for no email */
+        font-size: 0.9em;
+      }
+
+      .email-button {
+        background-color: #046007; /* Green email button */
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 0.9em;
+        margin-top: 6px;
+        transition: background-color 0.3s ease;
+      }
+
+      .email-button:hover {
+        background-color: #034c06;
+      }
+
+      .email-status {
+        display: none;
+        color: #0b6d06; /* Light green success */
+        margin-top: 6px;
+        font-weight: bold;
+        font-size: 0.9em;
+      }
+
+      .message-box {
+        position: fixed;
+        top: -50px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #328135;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 4px;
+        display: none;
+        transition: top 0.5s ease-in-out;
+        z-index: 1000;
+        font-size: 0.9em;
+      }
+
+      #emailModal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 85%;
+        max-width: 550px;
+        background-color: #1a1f26; /* darker modal */
+        color: #eee;
+        padding: 25px;
+        border: 2px solid #2a333d;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px #000;
+        z-index: 1001;
+        display: none;
+        text-align: left;
+        font-size: 0.95em;
+      }
+
+      #emailModal label {
+        display: block;
+        margin-top: 12px;
+        font-weight: 500;
+        color: #cdd6e0;
+        font-size: 1em;
+      }
+
+      #emailModal input[type="text"],
+      #emailModal textarea {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-top: 6px;
+        margin-bottom: 12px;
+        background-color: #202831;
+        border: 1px solid #3b4a57;
+        border-radius: 5px;
+        font-size: 1em;
+        color: #eee;
+        box-sizing: border-box;
+      }
+
+      #emailModal textarea {
+        height: 200px; /* ⬆️ taller by default */
+        resize: vertical; /* user can resize if needed */
+      }
+
+      #emailModal button {
+        background-color: #3579a5;
+        color: #fff;
+        border: none;
+        padding: 10px 18px;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 1em;
+        margin-right: 12px;
+        transition: background-color 0.3s ease;
+      }
+
+      #emailModal button:hover {
+        background-color: #226185;
+      }
+
+      #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(30, 30, 30, 0.8); /* Darker overlay */
+        z-index: 9999;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: opacity 0.3s ease;
+      }
+
+      .loading-spinner {
+        border: 6px solid #435761;
+        border-top: 6px solid #4477a0;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin-bottom: 15px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
         }
+      }
+
+      #loading-overlay p {
+        font-size: 1em;
+        color: #eee;
+        font-weight: bold;
+      }
+
+      .footer {
+        background-color: #222831; /* Darker footer */
+        color: #bdbdbd;
+        border-radius: 0;
+        text-align: center;
+        width: 100%; /* Match container width */
+        max-width: 1500px;
+        margin-top: auto;
+        font-size: 0.8em;
+        box-sizing: border-box; /* Ensure padding doesn't increase width */
+      }
+
+      .footer a {
+        color: #19546f;
+        text-decoration: underline;
+      }
+      .product-table-container {
+  margin-bottom: 40px;
+  width: 100%;
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.product-title {
+  font-size: 1.5em;
+  margin: 20px 0 10px;
+  color: #64b5f6;
+  text-align: left;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.manufacturer-table-wrapper {
+  width: 300%;
+  overflow-x: auto;
+  border-radius: 8px;
+  background-color: #2a2f38;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.manufacturer-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #d4d4d4;
+}
+
+.manufacturer-table th,
+.manufacturer-table td {
+  border: 1px solid #3d4752;
+  padding: 14px 18px;
+  text-align: left;
+  word-wrap: break-word;
+  font-size: 15px;
+  width: 20%; /* Ensure all 5 columns have equal width */
+}
+
+.manufacturer-table th {
+  background-color: #1f2630;
+  color: #a8d4e9;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.manufacturer-table td {
+  background-color: #2a2f38;
+}
+
+.manufacturer-link {
+  color: #67b9e0;
+  text-decoration: underline;
+  word-break: break-word;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.manufacturer-link:hover {
+  color: #248fc1;
+}
+
+.no-email {
+  color: #92130a;
+  font-weight: bold;
+}
+
+.email-button {
+  background-color: #046007;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.9em;
+  transition: background-color 0.3s ease;
+}
+
+.email-button:hover {
+  background-color: #034c06;
+}
+
+.email-status {
+  color: #0b6d06;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="header">
-        <div class="nav-links">
-            <a href="{% url 'home' %}">Home</a>
-            <a href="{% url 'about' %}">About</a>
-            <a href="{% url 'contact' %}">Contact</a>
-        </div>
-        <form method="POST" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit" class="logout-btn">Logout</button>
-        </form>
+      <div class="logo">🤖 AI Supply Bot</div>
+      <div class="nav-links">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'contact' %}">Contact</a>
+      </div>
+      <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %} {% load base64_filters %}
+        <button type="submit" class="logout-btn">Logout</button>
+      </form>
     </div>
 
     <div class="container">
-        <h2>Welcome to VikasReach</h2>
+      <div class="content-wrapper">
+        <h2>Welcome to AI Supply Bot</h2>
+        <p class="description">
+          Enter the material you want to sell, and we will find the
+          manufacturers who need your material.
+        </p>
 
-        <form method="POST">
-            {% csrf_token %}
-            <label>Enter Material to Sell:</label>
-            <input type="text" name="query" required />
-            <button type="submit">Search</button>
+        <form method="POST" id="ingredient-form">
+          {% csrf_token %}
+          <label for="query">Enter Raw Material to Sell:</label>
+          <input
+            type="text"
+            name="query"
+            id="query"
+            placeholder="e.g., Sugar, salt (comma-seperated)"
+            required
+          />
+          <button type="submit">Search</button>
         </form>
 
         {% if query %}
-        <h3>Manufacturers for "{{ query }}"</h3>
+        <h3>
+          Here are list of products and their respective manufacturers that uses
+          "{{ query }}"
+        </h3>
 
-        {% if manufacturers %}
-        <ul>
-            {% for manufacturer in manufacturers %}
-            <li>
-                <strong>{{ manufacturer.name }}</strong> <br />
-                Website:
-                <a href="{{ manufacturer.website }}" target="_blank">{{ manufacturer.website }}</a><br />
-                Contact Email: {{ manufacturer.contact_email }} <br />
-
-                {% if manufacturer.contact_email != "None" %}
-                <form class="email-form">
-                    {% csrf_token %}
-                    <input type="hidden" name="manufacturer_email" value="{{ manufacturer.contact_email }}" />
-                    <input type="hidden" name="manufacturer_name" value="{{ manufacturer.name }}" />
-                    <button type="submit">Send Email</button>
-                </form>
-                {% else %}
-                <p style="color: red">No email available</p>
-                {% endif %}
-            </li>
-            {% endfor %}
-        </ul>
+        {% if manufacturers_by_product %}
+        <div class="manufacturers-grid">
+          {% for product, manufacturers in manufacturers_by_product.items %}
+  <div class="product-table-container">
+    <h4 class="product-title">{{ product|title }}</h4>
+    <div class="manufacturer-table-wrapper">
+    <table class="manufacturer-table">
+      <thead>
+        <tr>
+          <th>Manufacturer</th>
+          <th>Website</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for manufacturer in manufacturers %}
+          <tr>
+            <td>{{ manufacturer.name }}</td>
+            <td>
+              {% if manufacturer.website != "#" %}
+                <a href="{{ manufacturer.website }}" target="_blank" class="manufacturer-link">
+                  {{ manufacturer.website }}
+                </a>
+              {% else %}
+                Not Available
+              {% endif %}
+            </td>
+            <td>{{ manufacturer.contact_email|default:"Not Available" }}</td>
+            <td>{{ manufacturer.contact_phone|default:"Not Available" }}</td>
+            <td>
+              {% if manufacturer.contact_email != "Not Available" %}
+                {% with manufacturer.contact_email|base64_id as safe_id %}
+                  <div id="email-btn-wrapper-{{ safe_id }}">
+                    <button
+                      type="button"
+                      onclick="openEmailModal('{{ manufacturer.name }}', '{{ manufacturer.contact_email }}', '{{ safe_id }}')"
+                      id="btn-{{ safe_id }}"
+                      class="email-button"
+                    >
+                      Send Email
+                    </button>
+                  </div>
+                  <p id="status-{{ safe_id }}" class="email-status">
+                    <strong>Already Emailed ✅</strong>
+                  </p>
+                {% endwith %}
+              {% else %}
+                <span class="no-email">Not Available</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+{% endfor %}
+</div>
         {% else %}
         <p>No manufacturers found.</p>
-        {% endif %}
-        {% endif %}
+        {% endif %} {% endif %}
 
         <div id="message-box" class="message-box"></div>
+      </div>
     </div>
 
     <div class="footer">
-        <p>&copy; 2025 VikasReach | <a href="mailto:vikasreach02@gmail.com">Contact Us</a></p>
+      <p>
+        &copy; 2025 VikasReach |
+        <a href="mailto:vikasreach02@gmail.com">Contact Us</a>
+      </p>
+    </div>
+
+    <div id="emailModal">
+      <form id="custom-email-form" method="POST">
+        {% csrf_token %}
+        <input
+          type="hidden"
+          name="manufacturer_email"
+          id="modal-manufacturer-email"
+        />
+        <input
+          type="hidden"
+          name="manufacturer_name"
+          id="modal-manufacturer-name"
+        />
+        <label for="modal-email-subject">Subject:</label><br />
+        <input
+          type="text"
+          name="email_subject"
+          id="modal-email-subject"
+          required
+        /><br />
+        <label for="modal-email-body">Message:</label><br />
+        <textarea
+          name="email_body"
+          id="modal-email-body"
+          rows="6"
+          required
+        ></textarea
+        ><br />
+        <button type="submit">Send Email</button>
+        <button type="button" onclick="closeModal()">Cancel</button>
+      </form>
+    </div>
+
+    <div id="loading-overlay">
+      <div class="loading-spinner"></div>
+      <p id="loading-message">Sending Mail...</p>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Your JavaScript code remains the same
+      function openEmailModal(name, email, safeId) {
+        const subject = `Business Inquiry Regarding ${name}`;
+        const message = `Dear ${name},
+
+I am reaching out as I am interested in collaborating with your company.
+I would love to discuss potential business opportunities with you.
+
+Please let me know a convenient time to connect.
+
+Best Regards,
+{{ request.user.username }}
+{{ request.user.email }}`;
+
+        document.getElementById("modal-manufacturer-email").value = email;
+        document.getElementById("modal-manufacturer-name").value = name;
+        document.getElementById("modal-email-subject").value = subject;
+        document.getElementById("modal-email-body").value = message;
+
+        window.currentSafeId = safeId;
+
+        const modal = document.getElementById("emailModal");
+        modal.style.display = "block";
+
+        // 🧠 Scroll modal into view smoothly
+        modal.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+
+      function closeModal() {
+        document.getElementById("emailModal").style.display = "none";
+      }
+      document
+        .getElementById("ingredient-form")
+        .addEventListener("submit", function () {
+          const overlay = document.getElementById("loading-overlay");
+          const message = document.getElementById("loading-message");
+
+          message.textContent =
+            "Fetching manufacturer details... Please wait. This may take a few seconds.";
+          overlay.style.display = "flex";
         });
+
+      document
+        .getElementById("custom-email-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const formData = new FormData(this);
+          const csrfToken = formData.get("csrfmiddlewaretoken");
+
+          // Show loader when sending custom email
+          const loader = document.getElementById("loading-overlay");
+          loader.style.display = "flex";
+
+          fetch("", {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": csrfToken,
+            },
+            body: formData,
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              loader.style.display = "none";
+              closeModal();
+
+              const safeId = window.currentSafeId;
+              const wrapper = document.getElementById(
+                "email-btn-wrapper-" + safeId
+              );
+              const status = document.getElementById("status-" + safeId);
+
+              if (wrapper) wrapper.style.display = "none";
+              if (status) status.style.display = "block";
+
+              let messageBox = document.getElementById("message-box");
+              messageBox.innerText = data.message;
+              messageBox.style.backgroundColor = data.success
+                ? "#28a745"
+                : "#dc3545";
+              messageBox.style.display = "block";
+              messageBox.style.top = "20px";
+
+              setTimeout(() => {
+                messageBox.style.top = "-50px";
+                setTimeout(() => {
+                  messageBox.style.display = "none";
+                }, 500);
+              }, 3000);
+            })
+
+            .catch((err) => {
+              loader.style.display = "none"; // Hide loader on error too
+              console.error("Error sending email:", err);
+            });
+        });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const forms = document.querySelectorAll(".email-form");
+
+        forms.forEach((form) => {
+          form.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const csrfToken = document.querySelector(
+              "[name=csrfmiddlewaretoken]"
+            ).value;
+
+            // Show loading animation
+            const loader = document.getElementById("loading-overlay");
+            loader.style.display = "flex";
+
+            fetch("", {
+              method: "POST",
+              body: formData,
+              headers: {
+                "X-CSRFToken": csrfToken,
+              },
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                loader.style.display = "none"; // Hide loading
+
+                let messageBox = document.getElementById("message-box");
+                messageBox.innerText = data.message;
+                messageBox.style.backgroundColor = data.success
+                  ? "#28a745"
+                  : "#dc3545";
+                messageBox.style.display = "block";
+                messageBox.style.top = "20px";
+
+                setTimeout(() => {
+                  messageBox.style.top = "-50px";
+                  setTimeout(() => {
+                    messageBox.style.display = "none";
+                  }, 500);
+                }, 3000);
+              })
+              .catch((error) => {
+                loader.style.display = "none";
+                console.error("Error:", error);
+              });
+          });
+        });
+      });
     </script>
-</body>
+    <div id="loading-overlay">
+      <div class="loading-spinner"></div>
+      <p>Sending your email...</p>
+    </div>
+  </body>
 </html>
