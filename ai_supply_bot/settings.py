@@ -29,10 +29,8 @@ SECRET_KEY = "django-insecure-x&qb&kc@nelvne)i(j+%b&-kwe$wqu30)zkflc_2z6zgnngj6*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
 ALLOWED_HOSTS = ["ai-supply-bot-9ax4.onrender.com", "127.0.0.1"]
-
-import os
-
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
@@ -68,6 +66,7 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",

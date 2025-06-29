@@ -1,6 +1,8 @@
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+import shutil
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
@@ -17,12 +19,28 @@ django.setup()
 
 from .models import Manufacturer, Product
 
-CHROME_DRIVER_PATH = r"C:\\Users\\Public\\SRIHARSHINI\\apps installations\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe"
+# CHROME_DRIVER_PATH = r"C:\\Users\\Public\\SRIHARSHINI\\apps installations\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe"
 
 
 # RapidAPI Credentials
 RAPIDAPI_KEY = "4560435427msh81f3effeb7097bep1b5b1bjsn88ef8cb4e42b"
 RAPIDAPI_HOST = "real-time-amazon-data.p.rapidapi.com"
+
+# Define Correct Paths
+CHROME_BIN = "/opt/render/chrome/chrome-linux64/chrome"
+CHROMEDRIVER_BIN = "/opt/render/chromedriver/chromedriver"
+
+# Ensure ChromeDriver has execute permissions
+os.chmod(CHROMEDRIVER_BIN, 0o755)
+
+# Configure Chrome Options
+chrome_options = Options()
+chrome_options.binary_location = CHROME_BIN  # Set custom Chrome binary location
+chrome_options.add_argument("--headless")  # Run Chrome in headless mode
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--remote-debugging-port=9222")
 
 
 def human_like_delay(min_time=3, max_time=7):
@@ -34,8 +52,9 @@ def get_manufacturer_selenium(asin, max_retries=1):
     """Scrapes Amazon product page to find manufacturer details using ASIN."""
     url = f"https://www.amazon.com/dp/{asin}?th=1"
 
-    service = Service(executable_path=CHROME_DRIVER_PATH)
-    driver = webdriver.Chrome(service=service)
+    # Start Selenium WebDriver with correct paths
+    service = Service(CHROMEDRIVER_BIN)
+    driver = webdriver.Chrome(service=service, options=chrome_options)
 
     retries = 0
     while retries < max_retries:
@@ -49,8 +68,6 @@ def get_manufacturer_selenium(asin, max_retries=1):
                     f"⚠ CAPTCHA detected on attempt {retries + 1}. Retrying after delay..."
                 )
                 time.sleep(random.uniform(10, 15))
-                # retries += 1
-                # continue
                 return None
 
             soup = BeautifulSoup(driver.page_source, "html.parser")
